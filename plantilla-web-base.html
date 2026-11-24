@@ -1,0 +1,2698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nuevo sitio</title>
+  <style id="dynamic-theme-style">
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #111111;
+      --accent-color: #ff1493;
+      --border-color: #111111;
+      --font-main: Arial, Helvetica, sans-serif;
+      --nav-size: 28%;
+      --cat-font-size: 13px;
+    }
+  </style>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-main);
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    /* --- LAYOUT DINÁMICO DE NAVEGACIÓN / CATEGORÍAS --- */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+    .sidebar {
+      background: var(--bg-color);
+      z-index: 20;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .main {
+      flex: 1;
+      padding: 20px;
+      position: relative;
+      min-height: 100vh;
+      min-width: 0;
+    }
+
+    /* Posición: Izquierda (Default) */
+    .layout.nav-left { flex-direction: row; align-items: flex-start; }
+    .layout.nav-left .sidebar {
+      width: var(--nav-size);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-right: 1px dashed var(--border-color);
+    }
+
+    /* Posición: Derecha */
+    .layout.nav-right { flex-direction: row-reverse; align-items: flex-start; }
+    .layout.nav-right .sidebar {
+      width: var(--nav-size);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      border-left: 1px dashed var(--border-color);
+    }
+
+    /* Posición: Arriba */
+    .layout.nav-top { flex-direction: column; }
+    .layout.nav-top .sidebar {
+      width: 100%;
+      position: sticky;
+      top: 0;
+      height: auto;
+      max-height: 45vh;
+      border-bottom: 1px dashed var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 20px;
+    }
+    .layout.nav-top .site-title { margin-bottom: 0; }
+    .layout.nav-top .featured-box { width: 130px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-top .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+    .layout.nav-top .add-cat-box { margin-top: 0; padding-top: 0; border-top: none; }
+
+    /* Posición: Abajo (Barra inferior fija / footer dock) */
+    .layout.nav-bottom { flex-direction: column-reverse; padding-bottom: 90px; }
+    .layout.nav-bottom .sidebar {
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: auto;
+      max-height: 36vh;
+      border-top: 1px dashed var(--border-color);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 20px;
+      z-index: 45;
+    }
+    .layout.nav-bottom .site-title { margin-bottom: 0; }
+    .layout.nav-bottom .featured-box { width: 90px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-bottom .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+    .layout.nav-bottom .add-cat-box { margin-top: 0; padding-top: 0; border-top: none; }
+
+    /* Posición: Flotante (Caja arrastrable/flotante) */
+    .layout.nav-floating { flex-direction: column; }
+    .layout.nav-floating .sidebar {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: var(--nav-size);
+      min-width: 200px;
+      max-width: 90vw;
+      max-height: 82vh;
+      height: auto;
+      border: 1px dashed var(--border-color);
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.08);
+      z-index: 45;
+    }
+
+    /* --- ELEMENTOS DEL SIDEBAR --- */
+    .site-title {
+      font-size: calc(var(--cat-font-size) + 2px);
+      font-weight: normal;
+      cursor: pointer;
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 2px 6px;
+    }
+    .featured-box { width: 100%; margin-bottom: 16px; }
+    .featured-box.hidden-box { display: none !important; }
+    .featured-box img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      border: 1px dashed var(--border-color);
+      background: #f5f5f5;
+    }
+    .category-list { list-style: none; }
+    .category-list.cat-style-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .category-list.cat-style-pills .category-item { border: 1px dashed var(--border-color); padding: 3px 8px; }
+    .category-list.cat-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .category-list.cat-style-grid .category-item { border: 1px dashed var(--border-color); padding: 4px 6px; }
+
+    @keyframes flujoArcoiris {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .category-item {
+      cursor: pointer;
+      padding: 3px 6px;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      font-size: var(--cat-font-size);
+    }
+    .site-title:hover, .category-item:hover { color: var(--accent-color); }
+
+    /* Estilos de categoría activa */
+    .active-style-rainbow .category-item.active,
+    .active-style-rainbow .site-title.active {
+      color: #111111;
+      background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      background-size: 400% 100%;
+      animation: flujoArcoiris 14s linear infinite;
+    }
+    .active-style-accent .category-item.active,
+    .active-style-accent .site-title.active {
+      background: var(--accent-color);
+      color: var(--bg-color);
+    }
+    .active-style-underline .category-item.active,
+    .active-style-underline .site-title.active {
+      text-decoration: underline;
+      text-decoration-style: wavy;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+    .active-style-box .category-item.active,
+    .active-style-box .site-title.active {
+      border: 1px dashed var(--accent-color);
+      color: var(--accent-color);
+    }
+
+    .cat-edit-actions { display: none; gap: 2px; flex-shrink: 0; }
+    .editor-active .cat-edit-actions { display: inline-flex; }
+    .add-cat-box {
+      display: none;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #cccccc;
+      gap: 4px;
+    }
+    .editor-active .add-cat-box { display: flex; }
+    .add-cat-box input {
+      flex: 1;
+      border: 1px dashed var(--border-color);
+      padding: 3px 6px;
+      font-size: 11px;
+      font-family: inherit;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    /* --- TOOLBAR Y CONTROLES DE EDICIÓN --- */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+      gap: 10px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 15;
+    }
+    .toolbar-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      background: var(--bg-color);
+      border: 1px dashed var(--border-color);
+      padding: 4px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-color);
+      font-family: inherit;
+    }
+    .btn:hover, .btn.active-btn { color: var(--accent-color); border-color: var(--accent-color); }
+
+    .editor-bar {
+      display: none;
+      margin-bottom: 16px;
+      padding: 10px;
+      border: 1px dashed var(--border-color);
+      background: var(--bg-color);
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 15;
+    }
+    .editor-active .editor-bar { display: flex; }
+
+    .quick-add-box {
+      display: none;
+      margin-bottom: 16px;
+      padding: 12px;
+      border: 1px dashed var(--border-color);
+      background: var(--bg-color);
+      position: relative;
+      z-index: 15;
+    }
+    .quick-add-box.open { display: block; }
+    .quick-add-box textarea, .quick-add-box input[type="text"] {
+      width: 100%;
+      border: 1px dashed var(--border-color);
+      padding: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      margin: 6px 0;
+      resize: vertical;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .panel-card {
+      border: 1px dashed #bbbbbb;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    /* --- SIMULADOR DE VISTA CELULAR --- */
+    .mobile-preview-wrapper { width: 100%; transition: all 0.2s ease; }
+    .mobile-preview-mode .mobile-preview-wrapper {
+      max-width: 390px;
+      margin: 0 auto;
+      border: 2px dashed var(--accent-color);
+      padding: 12px;
+      background: var(--bg-color);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .mobile-preview-banner {
+      display: none;
+      font-size: 11px;
+      color: var(--accent-color);
+      border-bottom: 1px dashed var(--accent-color);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+    .mobile-preview-mode .mobile-preview-banner { display: flex; }
+
+    /* Simulación de menú dentro del marco celular */
+    .mobile-sim-nav {
+      display: none;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      font-size: 11px;
+    }
+    .mobile-preview-mode .mobile-sim-nav { display: block; }
+    .mobile-sim-nav-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      margin-top: 6px;
+      list-style: none;
+    }
+    .mobile-sim-nav-list.mob-scroll {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .mobile-sim-nav-list.mob-scroll li { white-space: nowrap; }
+
+    /* --- CONTENEDOR Y BLOQUES --- */
+    .blocks-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--block-gap, 14px);
+      align-items: flex-start;
+      position: relative;
+      min-height: 75vh;
+    }
+    .mobile-preview-mode .blocks-container {
+      gap: var(--mob-block-gap, 10px);
+    }
+
+    .block-item { position: relative; max-width: 100%; }
+    .block-item.hidden-on-mobile { opacity: 0.4; }
+    .align-left { flex-basis: 100%; display: flex; justify-content: flex-start; }
+    .align-center { flex-basis: 100%; display: flex; justify-content: center; }
+    .align-right { flex-basis: 100%; display: flex; justify-content: flex-end; }
+    .block-inner { width: 100%; position: relative; }
+
+    /* Sticker Libre */
+    .block-item.align-sticker { position: absolute; z-index: 10; margin: 0; }
+    .block-item.align-sticker .image-block-figure img { cursor: grab; }
+    .editor-active .block-item.align-sticker .block-inner {
+      border: 1px dashed var(--accent-color);
+      background: rgba(255,255,255,0.85);
+      padding: 6px;
+    }
+    .editor-active .block-item:not(.align-sticker) .block-inner {
+      border: 1px dashed #999999;
+      padding: 8px;
+    }
+    .editor-active .block-item.dragging { opacity: 0.4; }
+
+    .free-resize-handle {
+      display: none;
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      background: var(--bg-color);
+      border: 1px dashed var(--accent-color);
+      color: var(--accent-color);
+      font-size: 9px;
+      line-height: 12px;
+      text-align: center;
+      cursor: nwse-resize;
+      user-select: none;
+      z-index: 12;
+    }
+    .editor-active .free-resize-handle { display: block; }
+
+    .block-controls {
+      display: none;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1px dashed #cccccc;
+      font-size: 11px;
+    }
+    .editor-active .block-controls { display: flex; }
+    .ctrl-group { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+
+    .mini-btn {
+      background: var(--bg-color);
+      border: 1px dashed var(--border-color);
+      padding: 2px 5px;
+      font-size: 10px;
+      cursor: pointer;
+      color: var(--text-color);
+      font-family: inherit;
+    }
+    .mini-btn:hover, .mini-btn.selected { color: var(--accent-color); border-color: var(--accent-color); }
+    .drag-handle { cursor: grab; padding: 2px 5px; border: 1px dashed var(--border-color); user-select: none; }
+    .width-slider { width: 60px; accent-color: var(--accent-color); cursor: pointer; }
+    .width-label { font-size: 10px; min-width: 28px; }
+
+    /* Tipos de Bloques */
+    .text-block-content { padding: 12px; line-height: 1.55; word-break: break-word; }
+    .editor-active .text-block-content { min-height: 60px; outline: none; }
+    .text-block-content h1 { font-size: 20px; font-weight: bold; margin-bottom: 8px; line-height: 1.25; }
+    .text-block-content h2 { font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+    .text-block-content h3 { font-size: 12px; font-weight: normal; margin-bottom: 6px; }
+    .text-block-content p { margin-bottom: 8px; }
+    .text-block-content ul, .text-block-content ol { padding-left: 20px; margin-bottom: 8px; }
+    .text-block-content blockquote { border-left: 1px dashed var(--border-color); padding-left: 10px; margin: 8px 0; font-style: italic; }
+    .text-block-content a { color: var(--accent-color); text-decoration: underline; }
+
+    .rich-toolbar {
+      display: none;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin-bottom: 6px;
+      padding: 4px;
+      border: 1px dashed var(--border-color);
+      background: rgba(128,128,128,0.06);
+      align-items: center;
+    }
+    .editor-active .rich-toolbar { display: flex; }
+    .rich-select {
+      border: 1px dashed var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-size: 10px;
+      padding: 1px 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .color-wrap {
+      display: inline-flex;
+      align-items: center;
+      border: 1px dashed var(--border-color);
+      padding: 0 4px;
+      font-size: 10px;
+      gap: 3px;
+      background: var(--bg-color);
+    }
+    .color-wrap input[type="color"] { width: 15px; height: 15px; border: none; padding: 0; background: none; cursor: pointer; }
+
+    .image-block-figure img { width: 100%; height: auto; display: block; cursor: zoom-in; user-select: none; }
+    .spacer-block-inner { width: 100%; display: flex; align-items: center; justify-content: center; }
+    .spacer-line { width: 100%; height: 0; }
+    .video-block-wrapper { width: 100%; position: relative; background: #000000; overflow: hidden; }
+    .video-block-wrapper iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .image-caption { font-size: 11px; margin-top: 5px; opacity: 0.85; line-height: 1.35; }
+    .caption-input {
+      display: none;
+      width: 100%;
+      margin-top: 6px;
+      border: 1px dashed var(--border-color);
+      padding: 4px 6px;
+      font-size: 11px;
+      font-family: inherit;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    .editor-active .caption-input { display: block; }
+    .editor-active .image-caption { display: none; }
+
+    .grid-block-masonry { column-gap: 12px; width: 100%; }
+    .grid-sub-item { break-inside: avoid; margin-bottom: 12px; position: relative; }
+    .grid-sub-item img { width: 100%; height: auto; display: block; cursor: zoom-in; user-select: none; }
+    .grid-sub-controls {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      gap: 2px;
+      background: rgba(255,255,255,0.92);
+      padding: 2px;
+      border: 1px dashed var(--border-color);
+    }
+    .editor-active .grid-sub-controls { display: flex; }
+    .grid-add-more-bar {
+      display: none;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #cccccc;
+      gap: 4px;
+    }
+    .editor-active .grid-add-more-bar { display: flex; }
+    .grid-add-more-bar input {
+      flex: 1;
+      border: 1px dashed var(--border-color);
+      padding: 3px 6px;
+      font-size: 11px;
+      font-family: inherit;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    /* --- LIGHTBOX --- */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.96);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 24px;
+      user-select: none;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 82vw; max-height: 82vh; width: auto; height: auto; border: 1px dashed var(--border-color); }
+    .lightbox-caption { margin-top: 10px; font-size: 12px; max-width: 80vw; text-align: center; color: #111111; }
+    .lightbox-counter { position: fixed; top: 16px; left: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; font-size: 12px; display: none; }
+    .lightbox-close { position: fixed; top: 16px; right: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .lightbox-nav { position: fixed; top: 50%; transform: translateY(-50%); background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 8px 12px; cursor: pointer; font-size: 14px; z-index: 102; display: none; }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+    .lightbox-close:hover, .lightbox-nav:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+    @media (max-width: 900px) {
+      .layout { flex-direction: column !important; padding-bottom: 0 !important; }
+      .sidebar {
+        width: 100% !important;
+        position: static !important;
+        height: auto !important;
+        max-height: none !important;
+        border-right: none !important;
+        border-left: none !important;
+        border-bottom: 1px dashed var(--border-color) !important;
+        display: block !important;
+      }
+      .main { width: 100% !important; }
+      .block-item.mobile-hidden-real { display: none !important; }
+      .block-item:not(.align-sticker) { width: var(--mob-w, 100%) !important; }
+      .block-inner { width: 100% !important; }
+      .grid-block-masonry { column-count: var(--mob-cols, 2) !important; }
+      .lightbox img { max-width: 92vw; max-height: 75vh; }
+      .lightbox-nav { top: auto; bottom: 20px; transform: none; padding: 6px 14px; }
+      .lightbox-prev { left: 25%; }
+      .lightbox-next { right: 25%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout nav-left active-style-rainbow" id="appRoot">
+    <!-- Panel de Navegación / Categorías -->
+    <aside class="sidebar" id="sidebarEl">
+      <div class="site-title active" id="homeBtn">nombre del proyecto</div>
+
+      <div class="featured-box" id="featuredBox">
+        <img id="featuredImg" src="" alt="Vista previa">
+      </div>
+
+      <ul class="category-list" id="categoryList"></ul>
+
+      <!-- Agregar nueva categoría en modo edición -->
+      <div class="add-cat-box">
+        <input type="text" id="newCatInput" placeholder="Nueva categoría...">
+        <button class="mini-btn" id="addCatBtn">+ agregar</button>
+      </div>
+    </aside>
+
+    <!-- Área Principal -->
+    <main class="main">
+      <div class="toolbar">
+        <span id="currentViewLabel">inicio</span>
+        <div class="toolbar-actions">
+          <button class="btn active-btn" id="desktopDeviceBtn" title="Ver y editar en modo computadora">🖥️ compu</button>
+          <button class="btn" id="mobileDeviceBtn" title="Previsualizar y editar diseño para celular">📱 celu</button>
+          <button class="btn" id="toggleEditorBtn">+ editar bloques</button>
+          <button class="btn" id="exportEditHtmlBtn">exportar editor</button>
+          <button class="btn" id="exportPublicHtmlBtn">exportar web pública</button>
+        </div>
+      </div>
+
+      <!-- Barra de herramientas del editor -->
+      <div class="editor-bar" id="editorBar">
+        <div class="ctrl-group">
+          <button class="btn" id="addTextBlockBtn">+ texto</button>
+          <button class="btn" id="togglePhotoAddBtn">+ fotos (Drive / URL)</button>
+          <button class="btn" id="toggleVideoAddBtn">+ video (YouTube)</button>
+          <button class="btn" id="addSpacerBlockBtn">+ separador</button>
+          <button class="btn" id="toggleNavBoxBtn">🧭 menú y categorías</button>
+          <button class="btn" id="toggleThemeBoxBtn">🎨 estilos y celular</button>
+        </div>
+        <div class="ctrl-group">
+          <button class="btn" id="saveAllBtn">guardar cambios</button>
+          <button class="btn" id="resetDataBtn">vaciar plantilla</button>
+        </div>
+      </div>
+
+      <!-- Panel: Configuración de Menú y Categorías -->
+      <div class="quick-add-box" id="navBox">
+        <strong style="font-size: 11px;">🧭 Configuración de Categorías y Menú:</strong>
+        <div class="panel-grid">
+          <div class="panel-card">
+            <label>Nombre del sitio / título:</label>
+            <input type="text" id="siteTitleInput" value="nombre del proyecto" style="margin:0;">
+            <label>Posición del menú (compu):</label>
+            <select id="navPositionSelect" class="rich-select">
+              <option value="left">Izquierda (columna lateral)</option>
+              <option value="right">Derecha (columna lateral)</option>
+              <option value="top">Arriba (barra superior)</option>
+              <option value="bottom">Abajo (barra inferior fija)</option>
+              <option value="floating">Flotante (caja suelta)</option>
+            </select>
+          </div>
+
+          <div class="panel-card">
+            <label>Ancho del menú lateral / flotante: <span id="navSizeLabel">28%</span></label>
+            <input type="range" id="navSizeSlider" min="15" max="50" value="28" class="width-slider" style="width:100%;">
+            <label>Tamaño de letra categorías: <span id="catFontSizeLabel">13px</span></label>
+            <input type="range" id="catFontSizeSlider" min="10" max="24" value="13" class="width-slider" style="width:100%;">
+          </div>
+
+          <div class="panel-card">
+            <label>Formato de lista de categorías:</label>
+            <select id="catListStyleSelect" class="rich-select">
+              <option value="list">Lista vertical clásica</option>
+              <option value="pills">Etiquetas / Botones (pills)</option>
+              <option value="grid">Grilla de 2 columnas</option>
+            </select>
+            <label>Efecto de categoría activa:</label>
+            <select id="catActiveStyleSelect" class="rich-select">
+              <option value="rainbow">Arcoíris animado</option>
+              <option value="accent">Fondo color acento</option>
+              <option value="underline">Subrayado + acento</option>
+              <option value="box">Recuadro punteado</option>
+            </select>
+          </div>
+
+          <div class="panel-card">
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" id="showFeaturedToggle" checked> Mostrar foto portada en menú
+            </label>
+            <label>Link portada de Inicio (Drive/URL):</label>
+            <input type="text" id="homeFeaturedInput" placeholder="Pegar link de imagen..." style="margin:0;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel: Estilos Globales y Ajustes Avanzados de Celular -->
+      <div class="quick-add-box" id="themeBox">
+        <strong style="font-size: 11px;">🎨 Estilos Globales y Edición Avanzada de Celular:</strong>
+        <div class="panel-grid">
+          <div class="panel-card">
+            <span style="font-weight:bold;">Paleta de colores:</span>
+            <div class="ctrl-group">
+              <label class="color-wrap">Fondo <input type="color" id="themeBgInput" value="#ffffff"></label>
+              <label class="color-wrap">Texto <input type="color" id="themeTextInput" value="#111111"></label>
+              <label class="color-wrap">Acento <input type="color" id="themeAccentInput" value="#ff1493"></label>
+              <label class="color-wrap">Bordes <input type="color" id="themeBorderInput" value="#111111"></label>
+            </div>
+            <label>Tipografía principal:</label>
+            <select id="themeFontSelect" class="rich-select">
+              <option value="Arial, Helvetica, sans-serif">Arial / Helvética</option>
+              <option value="'Courier New', Courier, monospace">Courier (Máquina)</option>
+              <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Verdana, Geneva, sans-serif">Verdana</option>
+              <option value="'Comic Sans MS', cursive, sans-serif">Comic Sans</option>
+            </select>
+            <label>Espacio entre bloques compu: <span id="blockGapLabel">14px</span></label>
+            <input type="range" id="blockGapSlider" min="0" max="50" value="14" class="width-slider" style="width:100%;">
+          </div>
+
+          <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">📱 Ajustes exclusivos para Celular:</span>
+            <label>Posición del menú en celular:</label>
+            <select id="mobNavPosSelect" class="rich-select">
+              <option value="top">Arriba (antes del contenido)</option>
+              <option value="bottom">Abajo (al final / barra inferior)</option>
+              <option value="fixed-bottom">Fijo abajo siempre visible</option>
+            </select>
+            <label>Estilo categorías en celular:</label>
+            <select id="mobCatLayoutSelect" class="rich-select">
+              <option value="wrap">Etiquetas envolventes (varias líneas)</option>
+              <option value="stack">Lista vertical (una debajo de otra)</option>
+              <option value="scroll">Carrusel horizontal deslizable</option>
+            </select>
+            <label>Letra categorías en celular: <span id="mobCatSizeLabel">12px</span></label>
+            <input type="range" id="mobCatSizeSlider" min="9" max="20" value="12" class="width-slider" style="width:100%;">
+          </div>
+
+          <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">📱 Más controles Celular:</span>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" id="mobShowFeaturedToggle" checked> Mostrar foto portada en celular
+            </label>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+              <input type="checkbox" id="mobStickersFreeToggle"> Mantener stickers flotando en celular
+            </label>
+            <label>Espacio entre bloques celular: <span id="mobBlockGapLabel">10px</span></label>
+            <input type="range" id="mobBlockGapSlider" min="0" max="40" value="10" class="width-slider" style="width:100%;">
+            <label>Margen interno celular: <span id="mobPaddingLabel">12px</span></label>
+            <input type="range" id="mobPaddingSlider" min="4" max="32" value="12" class="width-slider" style="width:100%;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Caja para agregar fotos -->
+      <div class="quick-add-box" id="quickAddBox">
+        <label style="font-size: 11px;">Pegá uno o varios links de Google Drive o URLs directas de imagen:</label>
+        <textarea id="driveLinksInput" rows="3" placeholder="https://drive.google.com/file/d/... o https://...jpg"></textarea>
+        <div class="ctrl-group">
+          <span style="font-size: 11px;">Modo:</span>
+          <select id="insertModeSelect" class="rich-select">
+            <option value="auto" selected>Automático (si son varias, crea grilla)</option>
+            <option value="grid">Siempre bloque grilla</option>
+            <option value="single">Bloques sueltos (1 por foto)</option>
+          </select>
+          <span style="font-size: 11px; margin-left: 6px;">Cols compu / celu:</span>
+          <select id="defaultGridCols" class="rich-select">
+            <option value="2">2 cols</option>
+            <option value="3" selected>3 cols</option>
+            <option value="4">4 cols</option>
+            <option value="5">5 cols</option>
+          </select>
+          <select id="defaultMobileGridCols" class="rich-select">
+            <option value="1">1 col celu</option>
+            <option value="2" selected>2 cols celu</option>
+            <option value="3">3 cols celu</option>
+          </select>
+          <span style="font-size: 11px; margin-left: 6px;">Ancho suelta:</span>
+          <select id="defaultPhotoWidth" class="rich-select">
+            <option value="25">Chica (25%)</option>
+            <option value="32">Tercio (32%)</option>
+            <option value="48" selected>Mediana (48%)</option>
+            <option value="66">Grande (66%)</option>
+            <option value="100">Completa (100%)</option>
+          </select>
+          <span style="font-size: 11px; margin-left: 6px;">Borde:</span>
+          <select id="defaultPhotoBorder" class="rich-select">
+            <option value="dashed" selected>Punteado</option>
+            <option value="none">Sin borde</option>
+            <option value="solid">Continuo</option>
+            <option value="dotted">Puntos</option>
+            <option value="double">Doble</option>
+          </select>
+          <button class="btn" id="insertPhotosBtn">agregar fotos</button>
+        </div>
+      </div>
+
+      <!-- Caja para agregar video YouTube -->
+      <div class="quick-add-box" id="quickVideoBox">
+        <label style="font-size: 11px;">Pegá el link del video de YouTube:</label>
+        <input type="text" id="youtubeLinkInput" placeholder="https://www.youtube.com/watch?v=... o https://youtu.be/...">
+        <div class="ctrl-group">
+          <span style="font-size: 11px;">Formato:</span>
+          <select id="defaultVideoRatio" class="rich-select">
+            <option value="16 / 9" selected>Panorámico (16:9)</option>
+            <option value="4 / 3">Clásico (4:3)</option>
+            <option value="9 / 16">Vertical / Short (9:16)</option>
+            <option value="1 / 1">Cuadrado (1:1)</option>
+          </select>
+          <span style="font-size: 11px; margin-left: 6px;">Ancho:</span>
+          <select id="defaultVideoWidth" class="rich-select">
+            <option value="32">Tercio (32%)</option>
+            <option value="48">Mediano (48%)</option>
+            <option value="66" selected>Grande (66%)</option>
+            <option value="100">Completo (100%)</option>
+          </select>
+          <button class="btn" id="insertVideoBtn">agregar video</button>
+        </div>
+      </div>
+
+      <!-- Marco simulador de celular + Contenedor dinámico de bloques -->
+      <div class="mobile-preview-wrapper" id="mobilePreviewWrapper">
+        <div class="mobile-preview-banner">
+          <span>📱 Vista Celular (390px)</span>
+          <button class="mini-btn" id="exitMobileBtn">volver a compu</button>
+        </div>
+        <div class="mobile-sim-nav" id="mobileSimNav"></div>
+        <div class="blocks-container" id="blocksContainer"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+    <button class="lightbox-close" id="lightboxClose">cerrar [esc]</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">←</button>
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" id="lightboxNext">→</button>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+
+  <script id="portfolio-data-script">
+    const INITIAL_DATA = {
+      "siteTitle": "nombre del proyecto",
+      "theme": {
+        "bg": "#ffffff",
+        "text": "#111111",
+        "accent": "#ff1493",
+        "border": "#111111",
+        "font": "Arial, Helvetica, sans-serif",
+        "blockGap": 14,
+        "navPosition": "left",
+        "navSize": 28,
+        "catFontSize": 13,
+        "catListStyle": "list",
+        "catActiveStyle": "rainbow",
+        "showFeatured": true,
+        "mobNavPos": "top",
+        "mobCatLayout": "wrap",
+        "mobCatSize": 12,
+        "mobShowFeatured": true,
+        "mobStickersFree": false,
+        "mobBlockGap": 10,
+        "mobPadding": 12
+      },
+      "home": {
+        "name": "inicio",
+        "featuredImg": "",
+        "blocks": [
+          {
+            "id": "b-welcome",
+            "type": "text",
+            "width": 100,
+            "mobileWidth": 100,
+            "align": "flow",
+            "borderStyle": "dashed",
+            "borderWidth": 1,
+            "borderColor": "#111111",
+            "html": "<h1>Plantilla Base</h1><p>Hacé clic en <b>+ editar bloques</b> arriba a la derecha para armar tu web, cambiar la posición y tamaño de las categorías, editar la versión celular y exportar el archivo final.</p>"
+          }
+        ]
+      },
+      "categories": [
+        {
+          "id": "cat-1",
+          "name": "Categoría 1",
+          "featuredImg": "",
+          "blocks": [
+            {
+              "id": "b-cat1-txt",
+              "type": "text",
+              "width": 100,
+              "mobileWidth": 100,
+              "align": "flow",
+              "borderStyle": "none",
+              "borderWidth": 1,
+              "borderColor": "#111111",
+              "html": "<h2>Categoría 1</h2><p>Agregá fotos, textos, grillas o videos acá.</p>"
+            }
+          ]
+        },
+        {
+          "id": "cat-2",
+          "name": "Categoría 2",
+          "featuredImg": "",
+          "blocks": []
+        }
+      ]
+    };
+  </script>
+
+  <script>
+    const STORAGE_KEY = "plantilla_web_base_v1";
+    let portfolioData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(INITIAL_DATA));
+
+    const defaultTheme = {
+      bg: "#ffffff", text: "#111111", accent: "#ff1493", border: "#111111",
+      font: "Arial, Helvetica, sans-serif", blockGap: 14,
+      navPosition: "left", navSize: 28, catFontSize: 13, catListStyle: "list",
+      catActiveStyle: "rainbow", showFeatured: true,
+      mobNavPos: "top", mobCatLayout: "wrap", mobCatSize: 12,
+      mobShowFeatured: true, mobStickersFree: false, mobBlockGap: 10, mobPadding: 12
+    };
+    portfolioData.theme = Object.assign({}, defaultTheme, portfolioData.theme || {});
+
+    let activeSectionId = "home";
+    let editorOpen = false;
+    let previewDevice = "desktop";
+    let draggedIndex = null;
+    let lightboxGallery = [];
+    let lightboxCurrentIndex = 0;
+    let touchStartX = 0;
+
+    const appRoot = document.getElementById("appRoot");
+    const dynamicThemeStyle = document.getElementById("dynamic-theme-style");
+    const categoryListEl = document.getElementById("categoryList");
+    const newCatInputEl = document.getElementById("newCatInput");
+    const addCatBtn = document.getElementById("addCatBtn");
+    const blocksContainerEl = document.getElementById("blocksContainer");
+    const featuredBoxEl = document.getElementById("featuredBox");
+    const featuredImgEl = document.getElementById("featuredImg");
+    const currentViewLabelEl = document.getElementById("currentViewLabel");
+    const homeBtn = document.getElementById("homeBtn");
+    const mobileSimNavEl = document.getElementById("mobileSimNav");
+    const mobilePreviewWrapperEl = document.getElementById("mobilePreviewWrapper");
+
+    const desktopDeviceBtn = document.getElementById("desktopDeviceBtn");
+    const mobileDeviceBtn = document.getElementById("mobileDeviceBtn");
+    const exitMobileBtn = document.getElementById("exitMobileBtn");
+    const toggleEditorBtn = document.getElementById("toggleEditorBtn");
+    const addTextBlockBtn = document.getElementById("addTextBlockBtn");
+    const togglePhotoAddBtn = document.getElementById("togglePhotoAddBtn");
+    const toggleVideoAddBtn = document.getElementById("toggleVideoAddBtn");
+    const addSpacerBlockBtn = document.getElementById("addSpacerBlockBtn");
+    const toggleNavBoxBtn = document.getElementById("toggleNavBoxBtn");
+    const toggleThemeBoxBtn = document.getElementById("toggleThemeBoxBtn");
+    const navBoxEl = document.getElementById("navBox");
+    const themeBoxEl = document.getElementById("themeBox");
+    const quickAddBoxEl = document.getElementById("quickAddBox");
+    const quickVideoBoxEl = document.getElementById("quickVideoBox");
+
+    // Controles de navegación y categorías
+    const siteTitleInput = document.getElementById("siteTitleInput");
+    const navPositionSelect = document.getElementById("navPositionSelect");
+    const navSizeSlider = document.getElementById("navSizeSlider");
+    const navSizeLabel = document.getElementById("navSizeLabel");
+    const catFontSizeSlider = document.getElementById("catFontSizeSlider");
+    const catFontSizeLabel = document.getElementById("catFontSizeLabel");
+    const catListStyleSelect = document.getElementById("catListStyleSelect");
+    const catActiveStyleSelect = document.getElementById("catActiveStyleSelect");
+    const showFeaturedToggle = document.getElementById("showFeaturedToggle");
+    const homeFeaturedInput = document.getElementById("homeFeaturedInput");
+
+    // Controles de tema y celular
+    const themeBgInput = document.getElementById("themeBgInput");
+    const themeTextInput = document.getElementById("themeTextInput");
+    const themeAccentInput = document.getElementById("themeAccentInput");
+    const themeBorderInput = document.getElementById("themeBorderInput");
+    const themeFontSelect = document.getElementById("themeFontSelect");
+    const blockGapSlider = document.getElementById("blockGapSlider");
+    const blockGapLabel = document.getElementById("blockGapLabel");
+
+    const mobNavPosSelect = document.getElementById("mobNavPosSelect");
+    const mobCatLayoutSelect = document.getElementById("mobCatLayoutSelect");
+    const mobCatSizeSlider = document.getElementById("mobCatSizeSlider");
+    const mobCatSizeLabel = document.getElementById("mobCatSizeLabel");
+    const mobShowFeaturedToggle = document.getElementById("mobShowFeaturedToggle");
+    const mobStickersFreeToggle = document.getElementById("mobStickersFreeToggle");
+    const mobBlockGapSlider = document.getElementById("mobBlockGapSlider");
+    const mobBlockGapLabel = document.getElementById("mobBlockGapLabel");
+    const mobPaddingSlider = document.getElementById("mobPaddingSlider");
+    const mobPaddingLabel = document.getElementById("mobPaddingLabel");
+
+    const driveLinksInputEl = document.getElementById("driveLinksInput");
+    const insertModeSelectEl = document.getElementById("insertModeSelect");
+    const defaultGridColsEl = document.getElementById("defaultGridCols");
+    const defaultMobileGridColsEl = document.getElementById("defaultMobileGridCols");
+    const defaultPhotoWidthEl = document.getElementById("defaultPhotoWidth");
+    const defaultPhotoBorderEl = document.getElementById("defaultPhotoBorder");
+    const insertPhotosBtn = document.getElementById("insertPhotosBtn");
+    const youtubeLinkInputEl = document.getElementById("youtubeLinkInput");
+    const defaultVideoRatioEl = document.getElementById("defaultVideoRatio");
+    const defaultVideoWidthEl = document.getElementById("defaultVideoWidth");
+    const insertVideoBtn = document.getElementById("insertVideoBtn");
+    const saveAllBtn = document.getElementById("saveAllBtn");
+    const resetDataBtn = document.getElementById("resetDataBtn");
+    const exportEditHtmlBtn = document.getElementById("exportEditHtmlBtn");
+    const exportPublicHtmlBtn = document.getElementById("exportPublicHtmlBtn");
+
+    const lightboxEl = document.getElementById("lightbox");
+    const lightboxImgEl = document.getElementById("lightboxImg");
+    const lightboxCaptionEl = document.getElementById("lightboxCaption");
+    const lightboxCounterEl = document.getElementById("lightboxCounter");
+    const lightboxCloseEl = document.getElementById("lightboxClose");
+    const lightboxPrevEl = document.getElementById("lightboxPrev");
+    const lightboxNextEl = document.getElementById("lightboxNext");
+
+    function uid() {
+      return "b-" + Math.random().toString(36).slice(2, 9);
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolioData));
+    }
+
+    function applyGlobalTheme() {
+      const t = portfolioData.theme;
+      dynamicThemeStyle.textContent = `
+        :root {
+          --bg-color: ${t.bg};
+          --text-color: ${t.text};
+          --accent-color: ${t.accent};
+          --border-color: ${t.border};
+          --font-main: ${t.font};
+          --nav-size: ${t.navSize}%;
+          --cat-font-size: ${t.catFontSize}px;
+          --block-gap: ${t.blockGap}px;
+          --mob-block-gap: ${t.mobBlockGap}px;
+        }
+      `;
+
+      appRoot.classList.remove("nav-left", "nav-right", "nav-top", "nav-bottom", "nav-floating");
+      appRoot.classList.add("nav-" + (t.navPosition || "left"));
+
+      appRoot.classList.remove("active-style-rainbow", "active-style-accent", "active-style-underline", "active-style-box");
+      appRoot.classList.add("active-style-" + (t.catActiveStyle || "rainbow"));
+
+      categoryListEl.classList.remove("cat-style-list", "cat-style-pills", "cat-style-grid");
+      categoryListEl.classList.add("cat-style-" + (t.catListStyle || "list"));
+
+      featuredBoxEl.classList.toggle("hidden-box", !t.showFeatured);
+
+      homeBtn.textContent = portfolioData.siteTitle || "nombre del proyecto";
+      siteTitleInput.value = portfolioData.siteTitle || "nombre del proyecto";
+      navPositionSelect.value = t.navPosition;
+      navSizeSlider.value = t.navSize;
+      navSizeLabel.textContent = t.navSize + "%";
+      catFontSizeSlider.value = t.catFontSize;
+      catFontSizeLabel.textContent = t.catFontSize + "px";
+      catListStyleSelect.value = t.catListStyle;
+      catActiveStyleSelect.value = t.catActiveStyle;
+      showFeaturedToggle.checked = t.showFeatured;
+      homeFeaturedInput.value = portfolioData.home.featuredImg || "";
+
+      themeBgInput.value = t.bg;
+      themeTextInput.value = t.text;
+      themeAccentInput.value = t.accent;
+      themeBorderInput.value = t.border;
+      themeFontSelect.value = t.font;
+      blockGapSlider.value = t.blockGap;
+      blockGapLabel.textContent = t.blockGap + "px";
+
+      mobNavPosSelect.value = t.mobNavPos;
+      mobCatLayoutSelect.value = t.mobCatLayout;
+      mobCatSizeSlider.value = t.mobCatSize;
+      mobCatSizeLabel.textContent = t.mobCatSize + "px";
+      mobShowFeaturedToggle.checked = t.mobShowFeatured;
+      mobStickersFreeToggle.checked = t.mobStickersFree;
+      mobBlockGapSlider.value = t.mobBlockGap;
+      mobBlockGapLabel.textContent = t.mobBlockGap + "px";
+      mobPaddingSlider.value = t.mobPadding;
+      mobPaddingLabel.textContent = t.mobPadding + "px";
+
+      if (previewDevice === "mobile") {
+        mobilePreviewWrapperEl.style.padding = t.mobPadding + "px";
+      } else {
+        mobilePreviewWrapperEl.style.padding = "";
+      }
+    }
+
+    // Listeners de navegación y tema
+    siteTitleInput.addEventListener("input", () => {
+      portfolioData.siteTitle = siteTitleInput.value;
+      homeBtn.textContent = portfolioData.siteTitle || "inicio";
+      saveToStorage();
+    });
+    navPositionSelect.addEventListener("change", () => {
+      portfolioData.theme.navPosition = navPositionSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    navSizeSlider.addEventListener("input", () => {
+      portfolioData.theme.navSize = parseInt(navSizeSlider.value, 10);
+      applyGlobalTheme();
+    });
+    navSizeSlider.addEventListener("change", saveToStorage);
+
+    catFontSizeSlider.addEventListener("input", () => {
+      portfolioData.theme.catFontSize = parseInt(catFontSizeSlider.value, 10);
+      applyGlobalTheme();
+    });
+    catFontSizeSlider.addEventListener("change", saveToStorage);
+
+    catListStyleSelect.addEventListener("change", () => {
+      portfolioData.theme.catListStyle = catListStyleSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    catActiveStyleSelect.addEventListener("change", () => {
+      portfolioData.theme.catActiveStyle = catActiveStyleSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    showFeaturedToggle.addEventListener("change", () => {
+      portfolioData.theme.showFeatured = showFeaturedToggle.checked;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    homeFeaturedInput.addEventListener("change", () => {
+      const urls = extractImageUrls(homeFeaturedInput.value);
+      portfolioData.home.featuredImg = urls[0] || homeFeaturedInput.value.trim();
+      saveToStorage();
+      updateView();
+    });
+
+    [
+      { el: themeBgInput, key: "bg" },
+      { el: themeTextInput, key: "text" },
+      { el: themeAccentInput, key: "accent" },
+      { el: themeBorderInput, key: "border" }
+    ].forEach(item => {
+      item.el.addEventListener("input", () => {
+        portfolioData.theme[item.key] = item.el.value;
+        applyGlobalTheme();
+      });
+      item.el.addEventListener("change", saveToStorage);
+    });
+
+    themeFontSelect.addEventListener("change", () => {
+      portfolioData.theme.font = themeFontSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    blockGapSlider.addEventListener("input", () => {
+      portfolioData.theme.blockGap = parseInt(blockGapSlider.value, 10);
+      applyGlobalTheme();
+    });
+    blockGapSlider.addEventListener("change", saveToStorage);
+
+    // Listeners exclusivos celular
+    mobNavPosSelect.addEventListener("change", () => {
+      portfolioData.theme.mobNavPos = mobNavPosSelect.value;
+      renderMobileSimNav();
+      saveToStorage();
+    });
+    mobCatLayoutSelect.addEventListener("change", () => {
+      portfolioData.theme.mobCatLayout = mobCatLayoutSelect.value;
+      renderMobileSimNav();
+      saveToStorage();
+    });
+    mobCatSizeSlider.addEventListener("input", () => {
+      portfolioData.theme.mobCatSize = parseInt(mobCatSizeSlider.value, 10);
+      mobCatSizeLabel.textContent = portfolioData.theme.mobCatSize + "px";
+      renderMobileSimNav();
+    });
+    mobCatSizeSlider.addEventListener("change", saveToStorage);
+
+    mobShowFeaturedToggle.addEventListener("change", () => {
+      portfolioData.theme.mobShowFeatured = mobShowFeaturedToggle.checked;
+      renderMobileSimNav();
+      saveToStorage();
+    });
+    mobStickersFreeToggle.addEventListener("change", () => {
+      portfolioData.theme.mobStickersFree = mobStickersFreeToggle.checked;
+      renderBlocks();
+      saveToStorage();
+    });
+    mobBlockGapSlider.addEventListener("input", () => {
+      portfolioData.theme.mobBlockGap = parseInt(mobBlockGapSlider.value, 10);
+      applyGlobalTheme();
+    });
+    mobBlockGapSlider.addEventListener("change", saveToStorage);
+
+    mobPaddingSlider.addEventListener("input", () => {
+      portfolioData.theme.mobPadding = parseInt(mobPaddingSlider.value, 10);
+      applyGlobalTheme();
+    });
+    mobPaddingSlider.addEventListener("change", saveToStorage);
+
+    function setDevicePreview(mode) {
+      previewDevice = mode;
+      appRoot.classList.toggle("mobile-preview-mode", mode === "mobile");
+      desktopDeviceBtn.classList.toggle("active-btn", mode === "desktop");
+      mobileDeviceBtn.classList.toggle("active-btn", mode === "mobile");
+      applyGlobalTheme();
+      renderMobileSimNav();
+      renderBlocks();
+    }
+
+    desktopDeviceBtn.addEventListener("click", () => setDevicePreview("desktop"));
+    mobileDeviceBtn.addEventListener("click", () => setDevicePreview("mobile"));
+    exitMobileBtn.addEventListener("click", () => setDevicePreview("desktop"));
+
+    function extractImageUrls(rawText) {
+      const urls = [];
+      const lines = rawText.split(/[\s,
+]+/).map(s => s.trim()).filter(Boolean);
+      lines.forEach(item => {
+        const driveMatch = item.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
+        if (driveMatch) {
+          urls.push(`https://lh3.googleusercontent.com/d/${driveMatch[1]}`);
+        } else if (/^https?:\/\/.+/i.test(item)) {
+          urls.push(item);
+        }
+      });
+      return urls;
+    }
+
+    function extractYoutubeId(url) {
+      if (!url) return null;
+      const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(regExp);
+      return match ? match[1] : null;
+    }
+
+    function getFallbackDriveUrl(url) {
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1600`;
+      return url;
+    }
+
+    function openLightbox(imagesArray, startIndex = 0, caption = "") {
+      lightboxGallery = imagesArray;
+      lightboxCurrentIndex = startIndex;
+      updateLightboxDisplay(caption);
+      lightboxEl.classList.add("open");
+    }
+
+    function updateLightboxDisplay(caption = "") {
+      const currentSrc = lightboxGallery[lightboxCurrentIndex];
+      lightboxImgEl.onerror = function() {
+        this.onerror = null;
+        this.src = getFallbackDriveUrl(currentSrc);
+      };
+      lightboxImgEl.src = currentSrc;
+      lightboxCaptionEl.textContent = caption;
+      if (lightboxGallery.length > 1) {
+        lightboxPrevEl.style.display = "block";
+        lightboxNextEl.style.display = "block";
+        lightboxCounterEl.style.display = "block";
+        lightboxCounterEl.textContent = `${lightboxCurrentIndex + 1} / ${lightboxGallery.length}`;
+      } else {
+        lightboxPrevEl.style.display = "none";
+        lightboxNextEl.style.display = "none";
+        lightboxCounterEl.style.display = "none";
+      }
+    }
+
+    function stepLightbox(delta) {
+      if (lightboxGallery.length <= 1) return;
+      lightboxCurrentIndex = (lightboxCurrentIndex + delta + lightboxGallery.length) % lightboxGallery.length;
+      updateLightboxDisplay("");
+    }
+
+    lightboxPrevEl.addEventListener("click", (e) => { e.stopPropagation(); stepLightbox(-1); });
+    lightboxNextEl.addEventListener("click", (e) => { e.stopPropagation(); stepLightbox(1); });
+    lightboxEl.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    lightboxEl.addEventListener("touchend", (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) stepLightbox(diff > 0 ? 1 : -1);
+    }, { passive: true });
+
+    function getCurrentSection() {
+      if (activeSectionId === "home") return portfolioData.home;
+      return portfolioData.categories.find(c => c.id === activeSectionId);
+    }
+
+    function getSectionPreviewImage(section) {
+      if (section.featuredImg) return section.featuredImg;
+      const firstImgBlock = section.blocks.find(b => b.type === "image" && b.src);
+      if (firstImgBlock) return firstImgBlock.src;
+      const firstGridBlock = section.blocks.find(b => b.type === "grid" && b.images && b.images.length > 0);
+      if (firstGridBlock) return firstGridBlock.images[0];
+      const firstVideoBlock = section.blocks.find(b => b.type === "youtube" && b.videoId);
+      if (firstVideoBlock) return `https://img.youtube.com/vi/${firstVideoBlock.videoId}/hqdefault.jpg`;
+      return portfolioData.home.featuredImg || "";
+    }
+
+    function setFeaturedImage(src) {
+      if (!src) {
+        featuredImgEl.removeAttribute("src");
+        return;
+      }
+      featuredImgEl.onerror = function() {
+        this.onerror = null;
+        this.src = getFallbackDriveUrl(src);
+      };
+      featuredImgEl.src = src;
+    }
+
+    function renderMobileSimNav() {
+      const t = portfolioData.theme;
+      mobileSimNavEl.innerHTML = "";
+      mobileSimNavEl.style.fontSize = t.mobCatSize + "px";
+
+      if (t.mobNavPos === "bottom" || t.mobNavPos === "fixed-bottom") {
+        mobilePreviewWrapperEl.appendChild(mobileSimNavEl);
+        mobileSimNavEl.style.borderBottom = "none";
+        mobileSimNavEl.style.borderTop = "1px dashed var(--border-color)";
+        mobileSimNavEl.style.paddingTop = "8px";
+        mobileSimNavEl.style.marginTop = "10px";
+        mobileSimNavEl.style.marginBottom = "0";
+      } else {
+        mobilePreviewWrapperEl.insertBefore(mobileSimNavEl, blocksContainerEl);
+        mobileSimNavEl.style.borderTop = "none";
+        mobileSimNavEl.style.borderBottom = "1px dashed var(--border-color)";
+        mobileSimNavEl.style.paddingBottom = "8px";
+        mobileSimNavEl.style.marginBottom = "10px";
+        mobileSimNavEl.style.marginTop = "0";
+      }
+
+      const titleDiv = document.createElement("div");
+      titleDiv.style.fontWeight = "bold";
+      titleDiv.style.cursor = "pointer";
+      titleDiv.textContent = portfolioData.siteTitle || "inicio";
+      titleDiv.addEventListener("click", () => { activeSectionId = "home"; updateView(); });
+      mobileSimNavEl.appendChild(titleDiv);
+
+      const sec = getCurrentSection();
+      const prevSrc = sec ? getSectionPreviewImage(sec) : "";
+      if (t.mobShowFeatured && prevSrc) {
+        const img = document.createElement("img");
+        img.src = prevSrc;
+        img.style.width = "100%";
+        img.style.aspectRatio = "16 / 10";
+        img.style.objectFit = "cover";
+        img.style.marginTop = "6px";
+        img.style.border = "1px dashed var(--border-color)";
+        mobileSimNavEl.appendChild(img);
+      }
+
+      const ul = document.createElement("ul");
+      ul.className = "mobile-sim-nav-list" + (t.mobCatLayout === "scroll" ? " mob-scroll" : "");
+      if (t.mobCatLayout === "stack") {
+        ul.style.flexDirection = "column";
+        ul.style.gap = "4px";
+      }
+
+      portfolioData.categories.forEach(cat => {
+        const li = document.createElement("li");
+        li.textContent = cat.name;
+        li.style.cursor = "pointer";
+        li.style.padding = "2px 4px";
+        if (activeSectionId === cat.id) {
+          li.style.color = "var(--accent-color)";
+          li.style.textDecoration = "underline";
+        }
+        li.addEventListener("click", () => { activeSectionId = cat.id; updateView(); });
+        ul.appendChild(li);
+      });
+      mobileSimNavEl.appendChild(ul);
+    }
+
+    function renderCategories() {
+      categoryListEl.innerHTML = "";
+      portfolioData.categories.forEach((cat, idx) => {
+        const li = document.createElement("li");
+        li.className = "category-item" + (activeSectionId === cat.id ? " active" : "");
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = cat.name;
+        li.appendChild(nameSpan);
+
+        const actionsSpan = document.createElement("span");
+        actionsSpan.className = "cat-edit-actions";
+
+        if (idx > 0) {
+          const upCatBtn = document.createElement("button");
+          upCatBtn.className = "mini-btn";
+          upCatBtn.textContent = "↑";
+          upCatBtn.title = "Subir categoría";
+          upCatBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const tmp = portfolioData.categories[idx - 1];
+            portfolioData.categories[idx - 1] = portfolioData.categories[idx];
+            portfolioData.categories[idx] = tmp;
+            saveToStorage();
+            renderCategories();
+          });
+          actionsSpan.appendChild(upCatBtn);
+        }
+
+        if (idx < portfolioData.categories.length - 1) {
+          const downCatBtn = document.createElement("button");
+          downCatBtn.className = "mini-btn";
+          downCatBtn.textContent = "↓";
+          downCatBtn.title = "Bajar categoría";
+          downCatBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const tmp = portfolioData.categories[idx + 1];
+            portfolioData.categories[idx + 1] = portfolioData.categories[idx];
+            portfolioData.categories[idx] = tmp;
+            saveToStorage();
+            renderCategories();
+          });
+          actionsSpan.appendChild(downCatBtn);
+        }
+
+        const renameBtn = document.createElement("button");
+        renameBtn.className = "mini-btn";
+        renameBtn.textContent = "✎";
+        renameBtn.title = "Renombrar";
+        renameBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const newName = prompt("Nuevo nombre para la categoría:", cat.name);
+          if (newName && newName.trim()) {
+            cat.name = newName.trim();
+            saveToStorage();
+            updateView();
+          }
+        });
+        actionsSpan.appendChild(renameBtn);
+
+        const delCatBtn = document.createElement("button");
+        delCatBtn.className = "mini-btn";
+        delCatBtn.textContent = "x";
+        delCatBtn.title = "Eliminar categoría";
+        delCatBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (confirm(`¿Eliminar la categoría "${cat.name}"?`)) {
+            portfolioData.categories.splice(idx, 1);
+            if (activeSectionId === cat.id) activeSectionId = "home";
+            saveToStorage();
+            updateView();
+          }
+        });
+        actionsSpan.appendChild(delCatBtn);
+
+        li.appendChild(actionsSpan);
+        li.addEventListener("mouseenter", () => {
+          const preview = getSectionPreviewImage(cat);
+          if (preview) setFeaturedImage(preview);
+        });
+        li.addEventListener("click", () => {
+          activeSectionId = cat.id;
+          updateView();
+        });
+        categoryListEl.appendChild(li);
+      });
+
+      homeBtn.className = "site-title" + (activeSectionId === "home" ? " active" : "");
+      if (previewDevice === "mobile") renderMobileSimNav();
+    }
+
+    addCatBtn.addEventListener("click", () => {
+      const val = newCatInputEl.value.trim();
+      if (!val) return;
+      const newId = "cat-" + Date.now();
+      portfolioData.categories.push({ id: newId, name: val, featuredImg: "", blocks: [] });
+      newCatInputEl.value = "";
+      activeSectionId = newId;
+      saveToStorage();
+      updateView();
+    });
+
+    function createRichToolbar(editableDiv) {
+      const bar = document.createElement("div");
+      bar.className = "rich-toolbar";
+      const buttons = [
+        { label: "H1", cmd: "formatBlock", val: "H1" },
+        { label: "H2", cmd: "formatBlock", val: "H2" },
+        { label: "H3", cmd: "formatBlock", val: "H3" },
+        { label: "P", cmd: "formatBlock", val: "P" },
+        { label: "<b>B</b>", cmd: "bold" },
+        { label: "<i>I</i>", cmd: "italic" },
+        { label: "<u>U</u>", cmd: "underline" },
+        { label: "Izq", cmd: "justifyLeft" },
+        { label: "Cen", cmd: "justifyCenter" },
+        { label: "Der", cmd: "justifyRight" },
+        { label: "Lista", cmd: "insertUnorderedList" },
+        { label: "Cita", cmd: "formatBlock", val: "BLOCKQUOTE" }
+      ];
+      buttons.forEach(b => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-btn";
+        btn.innerHTML = b.label;
+        btn.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          editableDiv.focus();
+          document.execCommand(b.cmd, false, b.val || null);
+        });
+        bar.appendChild(btn);
+      });
+
+      const linkBtn = document.createElement("button");
+      linkBtn.type = "button";
+      linkBtn.className = "mini-btn";
+      linkBtn.textContent = "Link";
+      linkBtn.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const url = prompt("Pegá la URL del enlace:", "https://");
+        if (url) {
+          editableDiv.focus();
+          document.execCommand("createLink", false, url);
+        }
+      });
+      bar.appendChild(linkBtn);
+
+      const colorWrap = document.createElement("label");
+      colorWrap.className = "color-wrap";
+      colorWrap.textContent = "Color ";
+      const colorInput = document.createElement("input");
+      colorInput.type = "color";
+      colorInput.value = portfolioData.theme.accent || "#ff1493";
+      colorInput.addEventListener("input", () => {
+        editableDiv.focus();
+        document.execCommand("foreColor", false, colorInput.value);
+      });
+      colorWrap.appendChild(colorInput);
+      bar.appendChild(colorWrap);
+
+      return bar;
+    }
+
+    function getActiveWidth(block) {
+      if (previewDevice === "mobile") {
+        return block.mobileWidth !== undefined ? block.mobileWidth : 100;
+      }
+      return block.width || 100;
+    }
+
+    function applyBlockGeometry(blockEl, blockInner, block) {
+      const w = getActiveWidth(block);
+      const t = portfolioData.theme;
+      const allowMobSticker = previewDevice === "mobile" && t.mobStickersFree && block.align === "sticker";
+      const align = (previewDevice === "mobile" && block.align === "sticker" && !t.mobStickersFree) ? "center" : (block.align || "flow");
+
+      blockEl.className = `block-item align-${align}` + (block.hideMobile ? " hidden-on-mobile" : "");
+      blockEl.style.left = "";
+      blockEl.style.top = "";
+      blockEl.style.width = "";
+      blockInner.style.width = "";
+
+      if (previewDevice === "mobile") {
+        if (block.hideMobile && !editorOpen) {
+          blockEl.style.display = "none";
+          return;
+        }
+        blockEl.style.display = "";
+        if (allowMobSticker) {
+          blockEl.style.width = w + "%";
+          blockEl.style.left = (block.mobX !== undefined ? block.mobX : (block.x || 20)) + "px";
+          blockEl.style.top = (block.mobY !== undefined ? block.mobY : (block.y || 20)) + "px";
+        } else if (align === "flow") {
+          blockEl.style.width = w >= 98 ? "100%" : `calc(${w}% - ${Math.round(t.mobBlockGap / 2)}px)`;
+        } else {
+          blockInner.style.width = w + "%";
+        }
+        return;
+      }
+
+      blockEl.style.display = "";
+      if (align === "sticker") {
+        blockEl.style.width = w + "%";
+        blockEl.style.left = (block.x || 40) + "px";
+        blockEl.style.top = (block.y || 40) + "px";
+      } else if (align === "flow") {
+        blockEl.style.width = w >= 98 ? "100%" : `calc(${w}% - ${Math.round(t.blockGap / 2)}px)`;
+      } else {
+        blockInner.style.width = w + "%";
+      }
+    }
+
+    function applyElementBorder(el, block) {
+      const style = block.borderStyle !== undefined ? block.borderStyle : "dashed";
+      const width = block.borderWidth || 1;
+      const color = block.borderColor || "#111111";
+      const radius = block.borderRadius || "0px";
+      el.style.border = style === "none" ? "none" : `${width}px ${style} ${color}`;
+      el.style.borderRadius = radius;
+    }
+
+    function appendBorderControls(container, block, onUpdateCallback) {
+      const borderSelect = document.createElement("select");
+      borderSelect.className = "rich-select";
+      [
+        { label: "borde: dashed", val: "dashed" },
+        { label: "sin borde", val: "none" },
+        { label: "borde: sólido", val: "solid" },
+        { label: "borde: puntos", val: "dotted" },
+        { label: "borde: doble", val: "double" }
+      ].forEach(bOpt => {
+        const o = document.createElement("option");
+        o.value = bOpt.val;
+        o.textContent = bOpt.label;
+        if ((block.borderStyle !== undefined ? block.borderStyle : "dashed") === bOpt.val) o.selected = true;
+        borderSelect.appendChild(o);
+      });
+      borderSelect.addEventListener("change", () => {
+        block.borderStyle = borderSelect.value;
+        onUpdateCallback();
+        saveToStorage();
+      });
+      container.appendChild(borderSelect);
+
+      const thickSelect = document.createElement("select");
+      thickSelect.className = "rich-select";
+      [1, 2, 3, 5].forEach(px => {
+        const o = document.createElement("option");
+        o.value = px;
+        o.textContent = px + "px";
+        if ((block.borderWidth || 1) === px) o.selected = true;
+        thickSelect.appendChild(o);
+      });
+      thickSelect.addEventListener("change", () => {
+        block.borderWidth = parseInt(thickSelect.value, 10);
+        onUpdateCallback();
+        saveToStorage();
+      });
+      container.appendChild(thickSelect);
+
+      const radiusSelect = document.createElement("select");
+      radiusSelect.className = "rich-select";
+      [
+        { label: "recto", val: "0px" },
+        { label: "suave 8px", val: "8px" },
+        { label: "redondo 20px", val: "20px" },
+        { label: "óvalo 50%", val: "50%" }
+      ].forEach(rOpt => {
+        const o = document.createElement("option");
+        o.value = rOpt.val;
+        o.textContent = rOpt.label;
+        if ((block.borderRadius || "0px") === rOpt.val) o.selected = true;
+        radiusSelect.appendChild(o);
+      });
+      radiusSelect.addEventListener("change", () => {
+        block.borderRadius = radiusSelect.value;
+        onUpdateCallback();
+        saveToStorage();
+      });
+      container.appendChild(radiusSelect);
+
+      const bColorWrap = document.createElement("label");
+      bColorWrap.className = "color-wrap";
+      const bColorInput = document.createElement("input");
+      bColorInput.type = "color";
+      bColorInput.value = block.borderColor || "#111111";
+      bColorInput.addEventListener("input", () => {
+        block.borderColor = bColorInput.value;
+        onUpdateCallback();
+      });
+      bColorInput.addEventListener("change", saveToStorage);
+      bColorWrap.appendChild(bColorInput);
+      container.appendChild(bColorWrap);
+    }
+
+    function renderBlocks() {
+      blocksContainerEl.innerHTML = "";
+      const section = getCurrentSection();
+      if (!section) return;
+
+      setFeaturedImage(getSectionPreviewImage(section));
+
+      section.blocks.forEach((block, index) => {
+        if (!block.width) block.width = block.type === "image" ? 48 : 100;
+        if (block.mobileWidth === undefined) block.mobileWidth = 100;
+        if (!block.align) block.align = "flow";
+        if (block.borderStyle === undefined) block.borderStyle = "dashed";
+        if (!block.borderWidth) block.borderWidth = 1;
+        if (!block.borderColor) block.borderColor = "#111111";
+
+        const blockEl = document.createElement("div");
+        const blockInner = document.createElement("div");
+        blockInner.className = "block-inner";
+
+        applyBlockGeometry(blockEl, blockInner, block);
+        blockEl.draggable = editorOpen && block.align !== "sticker";
+
+        blockEl.addEventListener("dragstart", (e) => {
+          if (!editorOpen || block.align === "sticker") return;
+          draggedIndex = index;
+          blockEl.classList.add("dragging");
+          e.dataTransfer.effectAllowed = "move";
+        });
+        blockEl.addEventListener("dragend", () => {
+          blockEl.classList.remove("dragging");
+          draggedIndex = null;
+        });
+        blockEl.addEventListener("dragover", (e) => {
+          if (!editorOpen || draggedIndex === null || block.align === "sticker") return;
+          e.preventDefault();
+        });
+        blockEl.addEventListener("drop", (e) => {
+          if (!editorOpen || draggedIndex === null || draggedIndex === index || block.align === "sticker") return;
+          e.preventDefault();
+          const moved = section.blocks.splice(draggedIndex, 1)[0];
+          section.blocks.splice(index, 0, moved);
+          saveToStorage();
+          renderBlocks();
+        });
+
+        function enableStickerDrag(handleElement) {
+          handleElement.addEventListener("pointerdown", (e) => {
+            const isMobSticker = previewDevice === "mobile" && portfolioData.theme.mobStickersFree && block.align === "sticker";
+            const isDeskSticker = previewDevice === "desktop" && block.align === "sticker";
+            if (!isDeskSticker && !isMobSticker) return;
+            if (e.target.closest("button") || e.target.closest("input") || e.target.closest("select") || e.target.closest("iframe") || e.target.classList.contains("free-resize-handle")) return;
+            e.preventDefault();
+
+            const startX = e.clientX;
+            const startY = e.clientY;
+            const origX = isMobSticker ? (block.mobX !== undefined ? block.mobX : (block.x || 20)) : (block.x || 40);
+            const origY = isMobSticker ? (block.mobY !== undefined ? block.mobY : (block.y || 20)) : (block.y || 40);
+
+            function onMove(ev) {
+              const nx = Math.max(0, Math.round(origX + (ev.clientX - startX)));
+              const ny = Math.max(0, Math.round(origY + (ev.clientY - startY)));
+              if (isMobSticker) {
+                block.mobX = nx;
+                block.mobY = ny;
+              } else {
+                block.x = nx;
+                block.y = ny;
+              }
+              blockEl.style.left = nx + "px";
+              blockEl.style.top = ny + "px";
+            }
+            function onUp() {
+              window.removeEventListener("pointermove", onMove);
+              window.removeEventListener("pointerup", onUp);
+              saveToStorage();
+            }
+            window.addEventListener("pointermove", onMove);
+            window.addEventListener("pointerup", onUp);
+          });
+        }
+
+        const controls = document.createElement("div");
+        controls.className = "block-controls";
+        const leftCtrl = document.createElement("div");
+        leftCtrl.className = "ctrl-group";
+
+        const dragHandle = document.createElement("span");
+        dragHandle.className = "drag-handle";
+        dragHandle.textContent = block.align === "sticker" ? "✥ mover" : "⋮⋮";
+        leftCtrl.appendChild(dragHandle);
+
+        if (block.align !== "sticker") {
+          const upBtn = document.createElement("button");
+          upBtn.className = "mini-btn";
+          upBtn.textContent = "↑";
+          upBtn.disabled = index === 0;
+          upBtn.addEventListener("click", () => {
+            if (index > 0) {
+              const temp = section.blocks[index - 1];
+              section.blocks[index - 1] = section.blocks[index];
+              section.blocks[index] = temp;
+              saveToStorage();
+              renderBlocks();
+            }
+          });
+          leftCtrl.appendChild(upBtn);
+
+          const downBtn = document.createElement("button");
+          downBtn.className = "mini-btn";
+          downBtn.textContent = "↓";
+          downBtn.disabled = index === section.blocks.length - 1;
+          downBtn.addEventListener("click", () => {
+            if (index < section.blocks.length - 1) {
+              const temp = section.blocks[index + 1];
+              section.blocks[index + 1] = section.blocks[index];
+              section.blocks[index] = temp;
+              saveToStorage();
+              renderBlocks();
+            }
+          });
+          leftCtrl.appendChild(downBtn);
+        }
+
+        [
+          { label: "grilla", val: "flow" },
+          { label: "izq", val: "left" },
+          { label: "centro", val: "center" },
+          { label: "der", val: "right" },
+          { label: "sticker", val: "sticker" }
+        ].forEach(al => {
+          const alBtn = document.createElement("button");
+          alBtn.className = "mini-btn" + (block.align === al.val ? " selected" : "");
+          alBtn.textContent = al.label;
+          alBtn.addEventListener("click", () => {
+            block.align = al.val;
+            if (al.val === "sticker" && block.x === undefined) { block.x = 60; block.y = 60; }
+            saveToStorage();
+            renderBlocks();
+          });
+          leftCtrl.appendChild(alBtn);
+        });
+
+        const hideMobBtn = document.createElement("button");
+        hideMobBtn.className = "mini-btn" + (block.hideMobile ? " selected" : "");
+        hideMobBtn.textContent = block.hideMobile ? "oculto en celu" : "ver en celu";
+        hideMobBtn.addEventListener("click", () => {
+          block.hideMobile = !block.hideMobile;
+          saveToStorage();
+          renderBlocks();
+        });
+        leftCtrl.appendChild(hideMobBtn);
+
+        const rightCtrl = document.createElement("div");
+        rightCtrl.className = "ctrl-group";
+
+        const currentW = getActiveWidth(block);
+        const deviceTag = document.createElement("span");
+        deviceTag.style.fontSize = "10px";
+        deviceTag.textContent = previewDevice === "mobile" ? "📱" : "🖥️";
+        rightCtrl.appendChild(deviceTag);
+
+        const widthLabel = document.createElement("span");
+        widthLabel.className = "width-label";
+        widthLabel.textContent = currentW + "%";
+
+        const slider = document.createElement("input");
+        slider.type = "range";
+        slider.min = "20";
+        slider.max = "100";
+        slider.value = currentW;
+        slider.className = "width-slider";
+        slider.addEventListener("input", () => {
+          const val = parseInt(slider.value, 10);
+          if (previewDevice === "mobile") block.mobileWidth = val;
+          else block.width = val;
+          widthLabel.textContent = val + "%";
+          applyBlockGeometry(blockEl, blockInner, block);
+        });
+        slider.addEventListener("change", saveToStorage);
+        rightCtrl.appendChild(slider);
+        rightCtrl.appendChild(widthLabel);
+
+        const sizePresets = previewDevice === "mobile"
+          ? [{ label: "1/2 celu", val: 48 }, { label: "100% celu", val: 100 }]
+          : [{ label: "1/3", val: 32 }, { label: "1/2", val: 48 }, { label: "2/3", val: 66 }, { label: "100%", val: 100 }];
+
+        sizePresets.forEach(sz => {
+          const szBtn = document.createElement("button");
+          szBtn.className = "mini-btn" + (currentW === sz.val ? " selected" : "");
+          szBtn.textContent = sz.label;
+          szBtn.addEventListener("click", () => {
+            if (previewDevice === "mobile") block.mobileWidth = sz.val;
+            else block.width = sz.val;
+            saveToStorage();
+            renderBlocks();
+          });
+          rightCtrl.appendChild(szBtn);
+        });
+
+        const dupBtn = document.createElement("button");
+        dupBtn.className = "mini-btn";
+        dupBtn.textContent = "⧉";
+        dupBtn.title = "Duplicar bloque";
+        dupBtn.addEventListener("click", () => {
+          const copy = JSON.parse(JSON.stringify(block));
+          copy.id = uid();
+          if (copy.align === "sticker") { copy.x = (copy.x || 40) + 25; copy.y = (copy.y || 40) + 25; }
+          section.blocks.splice(index + 1, 0, copy);
+          saveToStorage();
+          renderBlocks();
+        });
+
+        if (block.type === "text") {
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "text-block-content";
+          contentDiv.innerHTML = block.html || "";
+          contentDiv.contentEditable = editorOpen;
+          applyElementBorder(contentDiv, block);
+          appendBorderControls(rightCtrl, block, () => applyElementBorder(contentDiv, block));
+
+          contentDiv.addEventListener("input", () => {
+            block.html = contentDiv.innerHTML;
+            saveToStorage();
+          });
+          contentDiv.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.originalEvent || e).clipboardData.getData("text/plain");
+            document.execCommand("insertText", false, text);
+          });
+
+          rightCtrl.appendChild(dupBtn);
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.addEventListener("click", () => { section.blocks.splice(index, 1); saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(delBtn);
+
+          controls.appendChild(leftCtrl);
+          controls.appendChild(rightCtrl);
+          blockInner.appendChild(controls);
+          blockInner.appendChild(createRichToolbar(contentDiv));
+          blockInner.appendChild(contentDiv);
+
+        } else if (block.type === "spacer") {
+          const spacerWrap = document.createElement("div");
+          spacerWrap.className = "spacer-block-inner";
+          spacerWrap.style.height = (block.height || 30) + "px";
+          const line = document.createElement("div");
+          line.className = "spacer-line";
+          const st = block.borderStyle !== undefined ? block.borderStyle : "dashed";
+          line.style.borderTop = st === "none" ? "none" : `${block.borderWidth || 1}px ${st} ${block.borderColor || "#111111"}`;
+          spacerWrap.appendChild(line);
+
+          const hSelect = document.createElement("select");
+          hSelect.className = "rich-select";
+          [16, 30, 60, 100, 160].forEach(px => {
+            const o = document.createElement("option");
+            o.value = px;
+            o.textContent = "alto: " + px + "px";
+            if ((block.height || 30) === px) o.selected = true;
+            hSelect.appendChild(o);
+          });
+          hSelect.addEventListener("change", () => {
+            block.height = parseInt(hSelect.value, 10);
+            spacerWrap.style.height = block.height + "px";
+            saveToStorage();
+          });
+          rightCtrl.appendChild(hSelect);
+          appendBorderControls(rightCtrl, block, () => {
+            const s = block.borderStyle !== undefined ? block.borderStyle : "dashed";
+            line.style.borderTop = s === "none" ? "none" : `${block.borderWidth || 1}px ${s} ${block.borderColor || "#111111"}`;
+          });
+          rightCtrl.appendChild(dupBtn);
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.addEventListener("click", () => { section.blocks.splice(index, 1); saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(delBtn);
+
+          controls.appendChild(leftCtrl);
+          controls.appendChild(rightCtrl);
+          blockInner.appendChild(controls);
+          blockInner.appendChild(spacerWrap);
+
+        } else if (block.type === "image") {
+          const figure = document.createElement("div");
+          figure.className = "image-block-figure";
+          const img = document.createElement("img");
+          img.src = block.src;
+          img.loading = "lazy";
+          applyElementBorder(img, block);
+          appendBorderControls(rightCtrl, block, () => applyElementBorder(img, block));
+
+          const coverBtn = document.createElement("button");
+          coverBtn.className = "mini-btn" + (section.featuredImg === block.src ? " selected" : "");
+          coverBtn.textContent = "portada";
+          coverBtn.addEventListener("click", () => { section.featuredImg = block.src; saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(coverBtn);
+          rightCtrl.appendChild(dupBtn);
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.addEventListener("click", () => { section.blocks.splice(index, 1); saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(delBtn);
+
+          controls.appendChild(leftCtrl);
+          controls.appendChild(rightCtrl);
+          blockInner.appendChild(controls);
+
+          img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(block.src); };
+          img.addEventListener("click", () => {
+            if (editorOpen && block.align === "sticker") return;
+            openLightbox([block.src], 0, block.caption || "");
+          });
+          figure.appendChild(img);
+
+          if (block.caption && block.caption.trim() !== "") {
+            const cap = document.createElement("div");
+            cap.className = "image-caption";
+            cap.textContent = block.caption;
+            figure.appendChild(cap);
+          }
+          const capInput = document.createElement("input");
+          capInput.type = "text";
+          capInput.className = "caption-input";
+          capInput.placeholder = "Epígrafe opcional...";
+          capInput.value = block.caption || "";
+          capInput.addEventListener("input", () => { block.caption = capInput.value; saveToStorage(); });
+          figure.appendChild(capInput);
+          blockInner.appendChild(figure);
+
+        } else if (block.type === "youtube") {
+          const videoWrap = document.createElement("div");
+          videoWrap.className = "video-block-wrapper";
+          videoWrap.style.aspectRatio = block.aspectRatio || "16 / 9";
+          applyElementBorder(videoWrap, block);
+
+          const ratioSelect = document.createElement("select");
+          ratioSelect.className = "rich-select";
+          [{ label: "16:9", val: "16 / 9" }, { label: "4:3", val: "4 / 3" }, { label: "9:16", val: "9 / 16" }, { label: "1:1", val: "1 / 1" }].forEach(rOpt => {
+            const o = document.createElement("option");
+            o.value = rOpt.val;
+            o.textContent = rOpt.label;
+            if ((block.aspectRatio || "16 / 9") === rOpt.val) o.selected = true;
+            ratioSelect.appendChild(o);
+          });
+          ratioSelect.addEventListener("change", () => { block.aspectRatio = ratioSelect.value; videoWrap.style.aspectRatio = block.aspectRatio; saveToStorage(); });
+          rightCtrl.appendChild(ratioSelect);
+          appendBorderControls(rightCtrl, block, () => applyElementBorder(videoWrap, block));
+          rightCtrl.appendChild(dupBtn);
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.addEventListener("click", () => { section.blocks.splice(index, 1); saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(delBtn);
+
+          controls.appendChild(leftCtrl);
+          controls.appendChild(rightCtrl);
+          blockInner.appendChild(controls);
+
+          const iframe = document.createElement("iframe");
+          iframe.src = `https://www.youtube.com/embed/${block.videoId}`;
+          iframe.allowFullscreen = true;
+          videoWrap.appendChild(iframe);
+          blockInner.appendChild(videoWrap);
+
+        } else if (block.type === "grid") {
+          const gridContainer = document.createElement("div");
+          gridContainer.className = "grid-block-masonry";
+          const activeCols = previewDevice === "mobile" ? (block.mobileCols || 2) : (block.cols || 3);
+          gridContainer.style.columnCount = activeCols;
+
+          const colSelect = document.createElement("select");
+          colSelect.className = "rich-select";
+          const colChoices = previewDevice === "mobile" ? [1, 2, 3] : [2, 3, 4, 5];
+          colChoices.forEach(cNum => {
+            const o = document.createElement("option");
+            o.value = cNum;
+            o.textContent = cNum + (previewDevice === "mobile" ? " cols celu" : " cols");
+            if (activeCols === cNum) o.selected = true;
+            colSelect.appendChild(o);
+          });
+          colSelect.addEventListener("change", () => {
+            const val = parseInt(colSelect.value, 10);
+            if (previewDevice === "mobile") block.mobileCols = val;
+            else block.cols = val;
+            gridContainer.style.columnCount = val;
+            saveToStorage();
+          });
+          rightCtrl.appendChild(colSelect);
+          appendBorderControls(rightCtrl, block, () => gridContainer.querySelectorAll("img").forEach(im => applyElementBorder(im, block)));
+          rightCtrl.appendChild(dupBtn);
+
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.addEventListener("click", () => { section.blocks.splice(index, 1); saveToStorage(); renderBlocks(); });
+          rightCtrl.appendChild(delBtn);
+
+          controls.appendChild(leftCtrl);
+          controls.appendChild(rightCtrl);
+          blockInner.appendChild(controls);
+
+          (block.images || []).forEach((src, imgIdx) => {
+            const subItem = document.createElement("div");
+            subItem.className = "grid-sub-item";
+            const img = document.createElement("img");
+            img.src = src;
+            img.loading = "lazy";
+            applyElementBorder(img, block);
+            img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+            img.addEventListener("click", () => openLightbox(block.images, imgIdx, ""));
+            subItem.appendChild(img);
+
+            const subCtrl = document.createElement("div");
+            subCtrl.className = "grid-sub-controls";
+            if (imgIdx > 0) {
+              const prevBtn = document.createElement("button");
+              prevBtn.className = "mini-btn";
+              prevBtn.textContent = "←";
+              prevBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const tmp = block.images[imgIdx - 1];
+                block.images[imgIdx - 1] = block.images[imgIdx];
+                block.images[imgIdx] = tmp;
+                saveToStorage();
+                renderBlocks();
+              });
+              subCtrl.appendChild(prevBtn);
+            }
+            if (imgIdx < block.images.length - 1) {
+              const nextBtn = document.createElement("button");
+              nextBtn.className = "mini-btn";
+              nextBtn.textContent = "→";
+              nextBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const tmp = block.images[imgIdx + 1];
+                block.images[imgIdx + 1] = block.images[imgIdx];
+                block.images[imgIdx] = tmp;
+                saveToStorage();
+                renderBlocks();
+              });
+              subCtrl.appendChild(nextBtn);
+            }
+            const subCoverBtn = document.createElement("button");
+            subCoverBtn.className = "mini-btn" + (section.featuredImg === src ? " selected" : "");
+            subCoverBtn.textContent = "portada";
+            subCoverBtn.addEventListener("click", (e) => { e.stopPropagation(); section.featuredImg = src; saveToStorage(); renderBlocks(); });
+            subCtrl.appendChild(subCoverBtn);
+
+            const subDelBtn = document.createElement("button");
+            subDelBtn.className = "mini-btn";
+            subDelBtn.textContent = "x";
+            subDelBtn.addEventListener("click", (e) => { e.stopPropagation(); block.images.splice(imgIdx, 1); saveToStorage(); renderBlocks(); });
+            subCtrl.appendChild(subDelBtn);
+
+            subItem.appendChild(subCtrl);
+            gridContainer.appendChild(subItem);
+          });
+
+          blockInner.appendChild(gridContainer);
+
+          const addMoreBar = document.createElement("div");
+          addMoreBar.className = "grid-add-more-bar";
+          const moreInput = document.createElement("input");
+          moreInput.type = "text";
+          moreInput.placeholder = "Pegar más links para sumar a esta grilla...";
+          const moreBtn = document.createElement("button");
+          moreBtn.className = "mini-btn";
+          moreBtn.textContent = "+ sumar";
+          moreBtn.addEventListener("click", () => {
+            const extraUrls = extractImageUrls(moreInput.value);
+            if (extraUrls.length > 0) {
+              block.images.push(...extraUrls);
+              saveToStorage();
+              renderBlocks();
+            }
+          });
+          addMoreBar.appendChild(moreInput);
+          addMoreBar.appendChild(moreBtn);
+          blockInner.appendChild(addMoreBar);
+        }
+
+        const resizeHandle = document.createElement("div");
+        resizeHandle.className = "free-resize-handle";
+        resizeHandle.textContent = "◢";
+        resizeHandle.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const containerWidth = blocksContainerEl.clientWidth || 600;
+          const startX = e.clientX;
+          const startWidthPercent = getActiveWidth(block);
+
+          function onResizeMove(ev) {
+            const deltaPercent = ((ev.clientX - startX) / containerWidth) * 100;
+            const newWidth = Math.min(100, Math.max(20, Math.round(startWidthPercent + deltaPercent)));
+            if (previewDevice === "mobile") block.mobileWidth = newWidth;
+            else block.width = newWidth;
+            slider.value = newWidth;
+            widthLabel.textContent = newWidth + "%";
+            applyBlockGeometry(blockEl, blockInner, block);
+          }
+          function onResizeUp() {
+            window.removeEventListener("pointermove", onResizeMove);
+            window.removeEventListener("pointerup", onResizeUp);
+            saveToStorage();
+          }
+          window.addEventListener("pointermove", onResizeMove);
+          window.addEventListener("pointerup", onResizeUp);
+        });
+
+        blockInner.appendChild(resizeHandle);
+        enableStickerDrag(blockInner);
+        blockEl.appendChild(blockInner);
+        blocksContainerEl.appendChild(blockEl);
+      });
+    }
+
+    function updateView() {
+      applyGlobalTheme();
+      renderCategories();
+      renderBlocks();
+      const section = getCurrentSection();
+      if (section) currentViewLabelEl.textContent = section.name;
+    }
+
+    homeBtn.addEventListener("mouseenter", () => {
+      const preview = getSectionPreviewImage(portfolioData.home);
+      if (preview) setFeaturedImage(preview);
+    });
+    homeBtn.addEventListener("click", () => { activeSectionId = "home"; updateView(); });
+
+    toggleEditorBtn.addEventListener("click", () => {
+      editorOpen = !editorOpen;
+      appRoot.classList.toggle("editor-active", editorOpen);
+      toggleEditorBtn.classList.toggle("active-btn", editorOpen);
+      toggleEditorBtn.textContent = editorOpen ? "cerrar edición" : "+ editar bloques";
+      if (!editorOpen) {
+        [quickAddBoxEl, quickVideoBoxEl, themeBoxEl, navBoxEl].forEach(el => el.classList.remove("open"));
+      }
+      renderBlocks();
+    });
+
+    function openPanel(targetPanel) {
+      [quickAddBoxEl, quickVideoBoxEl, themeBoxEl, navBoxEl].forEach(el => {
+        if (el !== targetPanel) el.classList.remove("open");
+      });
+      targetPanel.classList.toggle("open");
+    }
+
+    toggleNavBoxBtn.addEventListener("click", () => openPanel(navBoxEl));
+    toggleThemeBoxBtn.addEventListener("click", () => openPanel(themeBoxEl));
+    togglePhotoAddBtn.addEventListener("click", () => openPanel(quickAddBoxEl));
+    toggleVideoAddBtn.addEventListener("click", () => openPanel(quickVideoBoxEl));
+
+    addTextBlockBtn.addEventListener("click", () => {
+      const section = getCurrentSection();
+      if (!section) return;
+      section.blocks.push({
+        id: uid(),
+        type: "text",
+        width: 100,
+        mobileWidth: 100,
+        align: "flow",
+        borderStyle: "dashed",
+        borderWidth: 1,
+        borderColor: portfolioData.theme.border || "#111111",
+        html: "<h2>Título</h2><p>Escribí acá...</p>"
+      });
+      saveToStorage();
+      renderBlocks();
+    });
+
+    addSpacerBlockBtn.addEventListener("click", () => {
+      const section = getCurrentSection();
+      if (!section) return;
+      section.blocks.push({
+        id: uid(),
+        type: "spacer",
+        width: 100,
+        mobileWidth: 100,
+        align: "flow",
+        height: 30,
+        borderStyle: "dashed",
+        borderWidth: 1,
+        borderColor: portfolioData.theme.border || "#111111"
+      });
+      saveToStorage();
+      renderBlocks();
+    });
+
+    insertPhotosBtn.addEventListener("click", () => {
+      const section = getCurrentSection();
+      if (!section) return;
+      const urls = extractImageUrls(driveLinksInputEl.value);
+      const mode = insertModeSelectEl.value;
+      const chosenCols = parseInt(defaultGridColsEl.value, 10) || 3;
+      const chosenMobCols = parseInt(defaultMobileGridColsEl.value, 10) || 2;
+      const chosenWidth = parseInt(defaultPhotoWidthEl.value, 10) || 48;
+      const chosenBorder = defaultPhotoBorderEl.value || "dashed";
+
+      if (urls.length > 0) {
+        const useGrid = mode === "grid" || (mode === "auto" && urls.length > 1);
+        if (useGrid) {
+          section.blocks.push({
+            id: uid(),
+            type: "grid",
+            width: 100,
+            mobileWidth: 100,
+            align: "flow",
+            cols: chosenCols,
+            mobileCols: chosenMobCols,
+            borderStyle: chosenBorder,
+            borderWidth: 1,
+            borderColor: portfolioData.theme.border || "#111111",
+            images: urls
+          });
+        } else {
+          urls.forEach((url, idx) => {
+            section.blocks.push({
+              id: uid(),
+              type: "image",
+              width: chosenWidth,
+              mobileWidth: 100,
+              align: "flow",
+              borderStyle: chosenBorder,
+              borderWidth: 1,
+              borderColor: portfolioData.theme.border || "#111111",
+              x: 50 + idx * 30,
+              y: 50 + idx * 30,
+              src: url,
+              caption: ""
+            });
+          });
+        }
+        driveLinksInputEl.value = "";
+        quickAddBoxEl.classList.remove("open");
+        saveToStorage();
+        renderBlocks();
+      }
+    });
+
+    insertVideoBtn.addEventListener("click", () => {
+      const section = getCurrentSection();
+      if (!section) return;
+      const videoId = extractYoutubeId(youtubeLinkInputEl.value.trim());
+      if (!videoId) {
+        alert("Link de YouTube no válido.");
+        return;
+      }
+      section.blocks.push({
+        id: uid(),
+        type: "youtube",
+        width: parseInt(defaultVideoWidthEl.value, 10) || 66,
+        mobileWidth: 100,
+        align: "center",
+        aspectRatio: defaultVideoRatioEl.value || "16 / 9",
+        borderStyle: "dashed",
+        borderWidth: 1,
+        borderColor: portfolioData.theme.border || "#111111",
+        x: 60,
+        y: 60,
+        videoId: videoId,
+        caption: ""
+      });
+      youtubeLinkInputEl.value = "";
+      quickVideoBoxEl.classList.remove("open");
+      saveToStorage();
+      renderBlocks();
+    });
+
+    saveAllBtn.addEventListener("click", () => {
+      saveToStorage();
+      renderBlocks();
+      saveAllBtn.textContent = "guardado ✓";
+      setTimeout(() => { saveAllBtn.textContent = "guardar cambios"; }, 1200);
+    });
+
+    resetDataBtn.addEventListener("click", () => {
+      if (confirm("¿Vaciar y restaurar la plantilla en blanco?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        portfolioData = JSON.parse(JSON.stringify(INITIAL_DATA));
+        activeSectionId = "home";
+        updateView();
+      }
+    });
+
+    exportEditHtmlBtn.addEventListener("click", () => {
+      const wasOpen = editorOpen;
+      const wasMobile = previewDevice === "mobile";
+      if (wasMobile) setDevicePreview("desktop");
+      if (wasOpen) {
+        editorOpen = false;
+        appRoot.classList.remove("editor-active");
+        [quickAddBoxEl, quickVideoBoxEl, themeBoxEl, navBoxEl].forEach(el => el.classList.remove("open"));
+        renderBlocks();
+      }
+      const dataScript = document.getElementById("portfolio-data-script");
+      dataScript.textContent = "
+    const INITIAL_DATA = " + JSON.stringify(portfolioData, null, 6) + ";
+  ";
+      const fullHtml = "<!DOCTYPE html>
+" + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "plantilla-editor.html";
+      a.click();
+
+      if (wasOpen) {
+        editorOpen = true;
+        appRoot.classList.add("editor-active");
+        renderBlocks();
+      }
+      if (wasMobile) setDevicePreview("mobile");
+    });
+
+    exportPublicHtmlBtn.addEventListener("click", () => {
+      const publicDataJson = JSON.stringify(portfolioData);
+      const t = portfolioData.theme;
+      const safeTitle = (portfolioData.siteTitle || "sitio web").replace(/</g, "&lt;");
+      const publicHtml = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${safeTitle}</title>
+  <style>
+    :root {
+      --bg-color: ${t.bg};
+      --text-color: ${t.text};
+      --accent-color: ${t.accent};
+      --border-color: ${t.border};
+      --font-main: ${t.font};
+      --nav-size: ${t.navSize}%;
+      --cat-font-size: ${t.catFontSize}px;
+      --block-gap: ${t.blockGap}px;
+      --mob-block-gap: ${t.mobBlockGap}px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg-color); color: var(--text-color); font-family: var(--font-main); font-size: 13px; line-height: 1.45; overflow-x: hidden; }
+    .layout { display: flex; min-height: 100vh; width: 100%; }
+    .sidebar { background: var(--bg-color); z-index: 20; padding: 20px; overflow-y: auto; }
+    .main { flex: 1; padding: 20px; position: relative; min-height: 100vh; min-width: 0; }
+
+    .layout.nav-left { flex-direction: row; align-items: flex-start; }
+    .layout.nav-left .sidebar { width: var(--nav-size); position: sticky; top: 0; height: 100vh; border-right: 1px dashed var(--border-color); }
+
+    .layout.nav-right { flex-direction: row-reverse; align-items: flex-start; }
+    .layout.nav-right .sidebar { width: var(--nav-size); position: sticky; top: 0; height: 100vh; border-left: 1px dashed var(--border-color); }
+
+    .layout.nav-top { flex-direction: column; }
+    .layout.nav-top .sidebar { width: 100%; position: sticky; top: 0; height: auto; max-height: 45vh; border-bottom: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 20px; }
+    .layout.nav-top .site-title { margin-bottom: 0; }
+    .layout.nav-top .featured-box { width: 130px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-top .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+
+    .layout.nav-bottom { flex-direction: column-reverse; padding-bottom: 90px; }
+    .layout.nav-bottom .sidebar { width: 100%; position: fixed; bottom: 0; left: 0; right: 0; height: auto; max-height: 36vh; border-top: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 20px; z-index: 45; }
+    .layout.nav-bottom .site-title { margin-bottom: 0; }
+    .layout.nav-bottom .featured-box { width: 90px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-bottom .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+
+    .layout.nav-floating { flex-direction: column; }
+    .layout.nav-floating .sidebar { position: fixed; top: 20px; left: 20px; width: var(--nav-size); min-width: 200px; max-width: 90vw; max-height: 82vh; height: auto; border: 1px dashed var(--border-color); box-shadow: 4px 4px 0px rgba(0,0,0,0.08); z-index: 45; }
+
+    @keyframes flujoArcoiris { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .site-title { font-size: calc(var(--cat-font-size) + 2px); font-weight: normal; cursor: pointer; display: inline-block; margin-bottom: 14px; padding: 2px 6px; }
+    .category-item { cursor: pointer; padding: 3px 6px; user-select: none; font-size: var(--cat-font-size); }
+    .site-title:hover, .category-item:hover { color: var(--accent-color); }
+
+    .active-style-rainbow .category-item.active, .active-style-rainbow .site-title.active { color: #111111; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); background-size: 400% 100%; animation: flujoArcoiris 14s linear infinite; }
+    .active-style-accent .category-item.active, .active-style-accent .site-title.active { background: var(--accent-color); color: var(--bg-color); }
+    .active-style-underline .category-item.active, .active-style-underline .site-title.active { text-decoration: underline; text-decoration-style: wavy; color: var(--accent-color); font-weight: bold; }
+    .active-style-box .category-item.active, .active-style-box .site-title.active { border: 1px dashed var(--accent-color); color: var(--accent-color); }
+
+    .featured-box { width: 100%; margin-bottom: 16px; }
+    .featured-box.hidden-box { display: none !important; }
+    .featured-box img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; border: 1px dashed var(--border-color); }
+    .category-list { list-style: none; }
+    .category-list.cat-style-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .category-list.cat-style-pills .category-item { border: 1px dashed var(--border-color); padding: 3px 8px; }
+    .category-list.cat-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .category-list.cat-style-grid .category-item { border: 1px dashed var(--border-color); padding: 4px 6px; }
+
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); }
+    .blocks-container { display: flex; flex-wrap: wrap; gap: var(--block-gap); align-items: flex-start; position: relative; min-height: 75vh; }
+    .block-item { position: relative; max-width: 100%; }
+    .align-left { flex-basis: 100%; display: flex; justify-content: flex-start; }
+    .align-center { flex-basis: 100%; display: flex; justify-content: center; }
+    .align-right { flex-basis: 100%; display: flex; justify-content: flex-end; }
+    .block-inner { width: 100%; position: relative; }
+    .block-item.align-sticker { position: absolute; z-index: 10; margin: 0; }
+    .text-block-content { padding: 12px; line-height: 1.55; word-break: break-word; }
+    .text-block-content h1 { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .text-block-content h2 { font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+    .text-block-content h3 { font-size: 12px; font-weight: normal; margin-bottom: 6px; }
+    .text-block-content p { margin-bottom: 8px; }
+    .text-block-content ul, .text-block-content ol { padding-left: 20px; margin-bottom: 8px; }
+    .text-block-content blockquote { border-left: 1px dashed var(--border-color); padding-left: 10px; margin: 8px 0; font-style: italic; }
+    .text-block-content a { color: var(--accent-color); text-decoration: underline; }
+    .spacer-block-inner { width: 100%; display: flex; align-items: center; justify-content: center; }
+    .spacer-line { width: 100%; height: 0; }
+    .image-block-figure img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    .video-block-wrapper { width: 100%; position: relative; background: #000000; overflow: hidden; }
+    .video-block-wrapper iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .image-caption { font-size: 11px; margin-top: 5px; opacity: 0.85; }
+    .grid-block-masonry { column-gap: 12px; width: 100%; }
+    .grid-sub-item { break-inside: avoid; margin-bottom: 12px; }
+    .grid-sub-item img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.96); z-index: 100; align-items: center; justify-content: center; flex-direction: column; padding: 24px; user-select: none; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 82vw; max-height: 82vh; width: auto; height: auto; border: 1px dashed var(--border-color); }
+    .lightbox-caption { margin-top: 10px; font-size: 12px; max-width: 80vw; text-align: center; color: #111111; }
+    .lightbox-counter { position: fixed; top: 16px; left: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; font-size: 12px; display: none; }
+    .lightbox-close { position: fixed; top: 16px; right: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .lightbox-nav { position: fixed; top: 50%; transform: translateY(-50%); background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 8px 12px; cursor: pointer; font-size: 14px; z-index: 102; display: none; }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: ${t.mobNavPos === "bottom" ? "column-reverse" : "column"} !important;
+        padding-bottom: ${t.mobNavPos === "fixed-bottom" ? "90px" : "0"} !important;
+      }
+      .sidebar {
+        width: 100% !important;
+        position: ${t.mobNavPos === "fixed-bottom" ? "fixed" : "static"} !important;
+        bottom: ${t.mobNavPos === "fixed-bottom" ? "0" : "auto"} !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: auto !important;
+        max-height: ${t.mobNavPos === "fixed-bottom" ? "35vh" : "none"} !important;
+        border-right: none !important;
+        border-left: none !important;
+        border-bottom: ${t.mobNavPos === "top" ? "1px dashed var(--border-color)" : "none"} !important;
+        border-top: ${t.mobNavPos !== "top" ? "1px dashed var(--border-color)" : "none"} !important;
+        display: block !important;
+        padding: ${t.mobPadding}px !important;
+      }
+      .featured-box { display: ${t.mobShowFeatured ? "block" : "none"} !important; }
+      .category-list {
+        display: flex !important;
+        flex-direction: ${t.mobCatLayout === "stack" ? "column" : "row"} !important;
+        flex-wrap: ${t.mobCatLayout === "scroll" ? "nowrap" : "wrap"} !important;
+        overflow-x: ${t.mobCatLayout === "scroll" ? "auto" : "visible"} !important;
+        gap: 6px !important;
+      }
+      .category-item { font-size: ${t.mobCatSize}px !important; white-space: ${t.mobCatLayout === "scroll" ? "nowrap" : "normal"}; }
+      .main { width: 100% !important; padding: ${t.mobPadding}px !important; }
+      .blocks-container { gap: var(--mob-block-gap) !important; }
+      .block-item.mobile-hidden { display: none !important; }
+      ${t.mobStickersFree ? `
+        .block-item.align-sticker { left: var(--mob-x, 20px) !important; top: var(--mob-y, 20px) !important; width: var(--mob-w, 40%) !important; }
+      ` : `
+        .block-item.align-sticker { position: relative !important; left: auto !important; top: auto !important; flex-basis: 100%; display: flex; justify-content: center; width: 100% !important; }
+        .block-item.align-sticker .block-inner { width: var(--mob-w, 100%) !important; }
+      `}
+      .block-item.align-flow { width: var(--mob-flow-w, 100%) !important; }
+      .block-item:not(.align-flow):not(.align-sticker) .block-inner { width: var(--mob-w, 100%) !important; }
+      .grid-block-masonry { column-count: var(--mob-cols, 2) !important; }
+      .lightbox img { max-width: 92vw; max-height: 75vh; }
+      .lightbox-nav { top: auto; bottom: 20px; transform: none; padding: 6px 14px; }
+      .lightbox-prev { left: 25%; }
+      .lightbox-next { right: 25%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout nav-${t.navPosition} active-style-${t.catActiveStyle}">
+    <aside class="sidebar">
+      <div class="site-title active" id="homeBtn">${safeTitle}</div>
+      <div class="featured-box ${t.showFeatured ? "" : "hidden-box"}" id="featuredBox"><img id="featuredImg" src="" alt=""></div>
+      <ul class="category-list cat-style-${t.catListStyle}" id="categoryList"></ul>
+    </aside>
+    <main class="main">
+      <div class="toolbar"><span id="currentViewLabel">inicio</span></div>
+      <div class="blocks-container" id="blocksContainer"></div>
+    </main>
+  </div>
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+    <button class="lightbox-close" id="lightboxClose">cerrar [esc]</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">←</button>
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" id="lightboxNext">→</button>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+  <script>
+    const DATA = ${publicDataJson};
+    let activeSectionId = "home";
+    let lbGallery = [], lbIndex = 0, touchStartX = 0;
+    const categoryListEl = document.getElementById("categoryList");
+    const blocksContainerEl = document.getElementById("blocksContainer");
+    const featuredBoxEl = document.getElementById("featuredBox");
+    const featuredImgEl = document.getElementById("featuredImg");
+    const currentViewLabelEl = document.getElementById("currentViewLabel");
+    const homeBtn = document.getElementById("homeBtn");
+    const lightboxEl = document.getElementById("lightbox");
+    const lightboxImgEl = document.getElementById("lightboxImg");
+    const lightboxCaptionEl = document.getElementById("lightboxCaption");
+    const lightboxCounterEl = document.getElementById("lightboxCounter");
+    const lightboxPrevEl = document.getElementById("lightboxPrev");
+    const lightboxNextEl = document.getElementById("lightboxNext");
+
+    function getFallbackDriveUrl(url) {
+      const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600" : url;
+    }
+    function openLb(imgs, idx, cap) {
+      lbGallery = imgs; lbIndex = idx; updateLb(cap); lightboxEl.classList.add("open");
+    }
+    function updateLb(cap) {
+      const src = lbGallery[lbIndex];
+      lightboxImgEl.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+      lightboxImgEl.src = src;
+      lightboxCaptionEl.textContent = cap || "";
+      if (lbGallery.length > 1) {
+        lightboxPrevEl.style.display = "block"; lightboxNextEl.style.display = "block";
+        lightboxCounterEl.style.display = "block"; lightboxCounterEl.textContent = (lbIndex + 1) + " / " + lbGallery.length;
+      } else {
+        lightboxPrevEl.style.display = "none"; lightboxNextEl.style.display = "none"; lightboxCounterEl.style.display = "none";
+      }
+    }
+    function stepLb(d) {
+      if (lbGallery.length <= 1) return;
+      lbIndex = (lbIndex + d + lbGallery.length) % lbGallery.length; updateLb("");
+    }
+    lightboxPrevEl.addEventListener("click", e => { e.stopPropagation(); stepLb(-1); });
+    lightboxNextEl.addEventListener("click", e => { e.stopPropagation(); stepLb(1); });
+    lightboxEl.addEventListener("touchstart", e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    lightboxEl.addEventListener("touchend", e => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) stepLb(diff > 0 ? 1 : -1);
+    }, { passive: true });
+
+    function getSectionPreviewImage(sec) {
+      if (sec.featuredImg) return sec.featuredImg;
+      const imgB = sec.blocks.find(b => b.type === "image" && b.src);
+      if (imgB) return imgB.src;
+      const gridB = sec.blocks.find(b => b.type === "grid" && b.images && b.images.length);
+      if (gridB) return gridB.images[0];
+      const vidB = sec.blocks.find(b => b.type === "youtube" && b.videoId);
+      if (vidB) return "https://img.youtube.com/vi/" + vidB.videoId + "/hqdefault.jpg";
+      return DATA.home.featuredImg || "";
+    }
+    function setFeatured(src) {
+      if (!src) { featuredImgEl.removeAttribute("src"); featuredBoxEl.style.display = "none"; return; }
+      if (DATA.theme.showFeatured) featuredBoxEl.style.display = "";
+      featuredImgEl.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+      featuredImgEl.src = src;
+    }
+    function applyBorder(el, b) {
+      const st = b.borderStyle !== undefined ? b.borderStyle : "dashed";
+      el.style.border = st === "none" ? "none" : (b.borderWidth || 1) + "px " + st + " " + (b.borderColor || "#111111");
+      el.style.borderRadius = b.borderRadius || "0px";
+    }
+    function render() {
+      categoryListEl.innerHTML = "";
+      DATA.categories.forEach(cat => {
+        const li = document.createElement("li");
+        li.className = "category-item" + (activeSectionId === cat.id ? " active" : "");
+        li.textContent = cat.name;
+        li.addEventListener("mouseenter", () => setFeatured(getSectionPreviewImage(cat)));
+        li.addEventListener("click", () => { activeSectionId = cat.id; render(); });
+        categoryListEl.appendChild(li);
+      });
+      homeBtn.className = "site-title" + (activeSectionId === "home" ? " active" : "");
+      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
+      if (!sec) return;
+      currentViewLabelEl.textContent = sec.name;
+      setFeatured(getSectionPreviewImage(sec));
+      blocksContainerEl.innerHTML = "";
+      sec.blocks.forEach(b => {
+        const w = b.width || 100;
+        const mw = b.mobileWidth !== undefined ? b.mobileWidth : 100;
+        const align = b.align || "flow";
+        const bEl = document.createElement("div");
+        bEl.className = "block-item align-" + align + (b.hideMobile ? " mobile-hidden" : "");
+        bEl.style.setProperty("--mob-w", mw + "%");
+        bEl.style.setProperty("--mob-flow-w", mw >= 98 ? "100%" : "calc(" + mw + "% - " + Math.round((DATA.theme.mobBlockGap || 10)/2) + "px)");
+        bEl.style.setProperty("--mob-x", (b.mobX !== undefined ? b.mobX : (b.x || 20)) + "px");
+        bEl.style.setProperty("--mob-y", (b.mobY !== undefined ? b.mobY : (b.y || 20)) + "px");
+
+        const bIn = document.createElement("div");
+        bIn.className = "block-inner";
+        if (align === "sticker") {
+          bEl.style.width = w + "%"; bEl.style.left = (b.x || 40) + "px"; bEl.style.top = (b.y || 40) + "px";
+        } else if (align === "flow") {
+          bEl.style.width = w >= 98 ? "100%" : "calc(" + w + "% - " + Math.round((DATA.theme.blockGap || 14)/2) + "px)";
+        } else {
+          bIn.style.width = w + "%";
+        }
+        if (b.type === "text") {
+          const d = document.createElement("div"); d.className = "text-block-content"; d.innerHTML = b.html || ""; applyBorder(d, b); bIn.appendChild(d);
+        } else if (b.type === "spacer") {
+          const sp = document.createElement("div"); sp.className = "spacer-block-inner"; sp.style.height = (b.height || 30) + "px";
+          const ln = document.createElement("div"); ln.className = "spacer-line";
+          const st = b.borderStyle !== undefined ? b.borderStyle : "dashed";
+          ln.style.borderTop = st === "none" ? "none" : (b.borderWidth || 1) + "px " + st + " " + (b.borderColor || "#111111");
+          sp.appendChild(ln); bIn.appendChild(sp);
+        } else if (b.type === "image") {
+          const fig = document.createElement("div"); fig.className = "image-block-figure";
+          const img = document.createElement("img"); img.src = b.src; img.loading = "lazy"; applyBorder(img, b);
+          img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(b.src); };
+          img.addEventListener("click", () => openLb([b.src], 0, b.caption || ""));
+          fig.appendChild(img);
+          if (b.caption) { const c = document.createElement("div"); c.className = "image-caption"; c.textContent = b.caption; fig.appendChild(c); }
+          bIn.appendChild(fig);
+        } else if (b.type === "youtube") {
+          const vw = document.createElement("div"); vw.className = "video-block-wrapper"; vw.style.aspectRatio = b.aspectRatio || "16 / 9"; applyBorder(vw, b);
+          const ifr = document.createElement("iframe"); ifr.src = "https://www.youtube.com/embed/" + b.videoId; ifr.allowFullscreen = true;
+          vw.appendChild(ifr); bIn.appendChild(vw);
+        } else if (b.type === "grid") {
+          const gc = document.createElement("div"); gc.className = "grid-block-masonry"; gc.style.columnCount = b.cols || 3; gc.style.setProperty("--mob-cols", b.mobileCols || 2);
+          (b.images || []).forEach((src, i) => {
+            const sub = document.createElement("div"); sub.className = "grid-sub-item";
+            const img = document.createElement("img"); img.src = src; img.loading = "lazy"; applyBorder(img, b);
+            img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+            img.addEventListener("click", () => openLb(b.images, i, ""));
+            sub.appendChild(img); gc.appendChild(sub);
+          });
+          bIn.appendChild(gc);
+        }
+        bEl.appendChild(bIn);
+        blocksContainerEl.appendChild(bEl);
+      });
+    }
+    homeBtn.addEventListener("mouseenter", () => setFeatured(getSectionPreviewImage(DATA.home)));
+    homeBtn.addEventListener("click", () => { activeSectionId = "home"; render(); });
+    document.getElementById("lightboxClose").addEventListener("click", () => lightboxEl.classList.remove("open"));
+    lightboxEl.addEventListener("click", e => { if (e.target === lightboxEl) lightboxEl.classList.remove("open"); });
+    document.addEventListener("keydown", e => {
+      if (!lightboxEl.classList.contains("open")) return;
+      if (e.key === "Escape") lightboxEl.classList.remove("open");
+      if (e.key === "ArrowLeft") stepLb(-1);
+      if (e.key === "ArrowRight") stepLb(1);
+    });
+    render();
+  <\/script>
+</body>
+</html>`;
+
+      const blob = new Blob([publicHtml], { type: "text/html;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "index.html";
+      a.click();
+    });
+
+    lightboxCloseEl.addEventListener("click", () => lightboxEl.classList.remove("open"));
+    lightboxEl.addEventListener("click", (e) => { if (e.target === lightboxEl) lightboxEl.classList.remove("open"); });
+    document.addEventListener("keydown", (e) => {
+      if (!lightboxEl.classList.contains("open")) return;
+      if (e.key === "Escape") lightboxEl.classList.remove("open");
+      if (e.key === "ArrowLeft") stepLightbox(-1);
+      if (e.key === "ArrowRight") stepLightbox(1);
+    });
+
+    updateView();
+  </script>
+</body>
+</html>

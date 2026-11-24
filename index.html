@@ -1178,8 +1178,7 @@
 
     function extractImageUrls(rawText) {
       const urls = [];
-      const lines = rawText.split(/[\s,
-]+/).map(s => s.trim()).filter(Boolean);
+      const lines = rawText.split(/[\s,\n]+/).map(s => s.trim()).filter(Boolean);
       lines.forEach(item => {
         const driveMatch = item.match(/(?:\/d\/|id=)([a-zA-Z0-9_-]{25,})/);
         if (driveMatch) {
@@ -2330,11 +2329,8 @@
         renderBlocks();
       }
       const dataScript = document.getElementById("portfolio-data-script");
-      dataScript.textContent = "
-    const INITIAL_DATA = " + JSON.stringify(portfolioData, null, 6) + ";
-  ";
-      const fullHtml = "<!DOCTYPE html>
-" + document.documentElement.outerHTML;
+      dataScript.textContent = "\n    const INITIAL_DATA = " + JSON.stringify(portfolioData, null, 6) + ";\n  ";
+      const fullHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
       const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);

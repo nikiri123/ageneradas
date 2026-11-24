@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>nuevo sitio</title>
+  <link id="dynamicFavicon" rel="icon" href="">
   <style id="dynamic-theme-style">
     :root {
       --bg-color: #ffffff;
@@ -13,8 +14,11 @@
       --font-main: Arial, Helvetica, sans-serif;
       --nav-size: 28%;
       --cat-font-size: 13px;
+      --rainbow-grad: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      --rainbow-text: #111111;
     }
   </style>
+  <style id="dynamic-cursor-style"></style>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -37,6 +41,8 @@
       z-index: 20;
       padding: 20px;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
     }
     .layout.nav-hidden .sidebar {
       display: none !important;
@@ -76,16 +82,16 @@
       position: sticky;
       top: 0;
       height: auto;
-      max-height: 45vh;
+      max-height: 55vh;
       border-bottom: 1px dashed var(--border-color);
-      display: flex;
+      flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
       gap: 16px;
       padding: 14px 20px;
     }
     .layout.nav-top .site-title { margin-bottom: 0; }
-    .layout.nav-top .featured-box { width: 130px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-top .featured-area { width: auto; max-width: 260px; margin: 0 !important; flex-shrink: 0; }
     .layout.nav-top .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
     .layout.nav-top .add-cat-box { margin-top: 0; padding-top: 0; border-top: none; }
 
@@ -98,9 +104,9 @@
       left: 0;
       right: 0;
       height: auto;
-      max-height: 36vh;
+      max-height: 42vh;
       border-top: 1px dashed var(--border-color);
-      display: flex;
+      flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
       gap: 14px;
@@ -108,11 +114,11 @@
       z-index: 45;
     }
     .layout.nav-bottom .site-title { margin-bottom: 0; }
-    .layout.nav-bottom .featured-box { width: 90px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-bottom .featured-area { width: auto; max-width: 180px; margin: 0 !important; flex-shrink: 0; }
     .layout.nav-bottom .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
     .layout.nav-bottom .add-cat-box { margin-top: 0; padding-top: 0; border-top: none; }
 
-    /* Posición: Flotante (Caja arrastrable/flotante) */
+    /* Posición: Flotante */
     .layout.nav-floating { flex-direction: column; }
     .layout.nav-floating .sidebar {
       position: fixed;
@@ -128,26 +134,59 @@
       z-index: 45;
     }
 
-    /* --- ELEMENTOS DEL SIDEBAR --- */
+    /* --- ELEMENTOS DEL SIDEBAR Y GALERÍA DE IMÁGENES EN CATEGORÍAS --- */
     .site-title {
       font-size: calc(var(--cat-font-size) + 2px);
       font-weight: normal;
       cursor: pointer;
       display: inline-block;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       padding: 2px 6px;
+      order: 1;
+      align-self: flex-start;
     }
-    .featured-box { width: 100%; margin-bottom: 16px; }
-    .featured-box.hidden-box { display: none !important; }
-    .featured-box img {
+
+    .featured-area {
       width: 100%;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      display: block;
-      border: 1px dashed var(--border-color);
-      background: #f5f5f5;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      order: 2;
     }
-    .category-list { list-style: none; }
+    .featured-area.hidden-box { display: none !important; }
+    .featured-area.place-above-title { order: 0; margin-bottom: 12px; }
+    .featured-area.place-below-title { order: 2; margin-bottom: 14px; }
+    .featured-area.place-below-cats { order: 4; margin-top: 14px; margin-bottom: 10px; }
+    .featured-area.place-bottom { order: 6; margin-top: auto; padding-top: 12px; margin-bottom: 0; }
+
+    .featured-area.align-img-left { justify-content: flex-start; }
+    .featured-area.align-img-center { justify-content: center; }
+    .featured-area.align-img-right { justify-content: flex-end; }
+
+    .featured-img-card {
+      position: relative;
+      max-width: 100%;
+    }
+    .featured-img-card img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+      cursor: zoom-in;
+    }
+    .featured-img-card-actions {
+      display: none;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      gap: 2px;
+      background: rgba(255,255,255,0.92);
+      padding: 2px;
+      border: 1px dashed var(--border-color);
+    }
+    .editor-active .featured-img-card-actions { display: flex; }
+
+    .category-list { list-style: none; order: 3; }
     .category-list.cat-style-pills { display: flex; flex-wrap: wrap; gap: 6px; }
     .category-list.cat-style-pills .category-item { border: 1px dashed var(--border-color); padding: 3px 8px; }
     .category-list.cat-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
@@ -174,8 +213,8 @@
     /* Estilos de categoría activa */
     .active-style-rainbow .category-item.active,
     .active-style-rainbow .site-title.active {
-      color: #111111;
-      background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      color: var(--rainbow-text);
+      background: var(--rainbow-grad);
       background-size: 400% 100%;
       animation: flujoArcoiris 14s linear infinite;
     }
@@ -205,6 +244,7 @@
       padding-top: 10px;
       border-top: 1px dashed #cccccc;
       gap: 4px;
+      order: 4;
     }
     .editor-active .add-cat-box { display: flex; }
     .add-cat-box input {
@@ -217,7 +257,7 @@
       color: var(--text-color);
     }
 
-    /* --- BOTONES PERSONALIZADOS Y MENÚS DESPLEGABLES (EN CATEGORÍAS Y EN ÁREA PRINCIPAL) --- */
+    /* --- BOTONES PERSONALIZADOS Y MENÚS DESPLEGABLES --- */
     .sidebar-custom-area {
       margin-top: 14px;
       padding-top: 12px;
@@ -225,6 +265,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      order: 5;
     }
     .sidebar-custom-area:empty { display: none; }
 
@@ -267,20 +308,14 @@
       border-color: var(--border-color) !important;
     }
     .hover-fx-rainbow:hover {
-      color: #111111 !important;
-      background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important;
+      color: var(--rainbow-text) !important;
+      background: var(--rainbow-grad) !important;
       background-size: 400% 100% !important;
       animation: flujoArcoiris 6s linear infinite !important;
     }
-    .hover-fx-lift:hover {
-      transform: translate(-3px, -3px);
-    }
-    .hover-fx-tilt:hover {
-      transform: rotate(-2.5deg) scale(1.03);
-    }
-    .hover-fx-zoom:hover {
-      transform: scale(1.06);
-    }
+    .hover-fx-lift:hover { transform: translate(-3px, -3px); }
+    .hover-fx-tilt:hover { transform: rotate(-2.5deg) scale(1.03); }
+    .hover-fx-zoom:hover { transform: scale(1.06); }
     .hover-fx-celeste:hover {
       background: #00f0ff !important;
       color: #111111 !important;
@@ -347,7 +382,6 @@
     .dropdown-sub-item:last-child { border-bottom: none; }
     .dropdown-sub-item img { width: 22px; height: 22px; object-fit: cover; border: 1px dashed var(--border-color); }
 
-    /* Editor de ítems en sidebar */
     .sidebar-widget-box {
       position: relative;
       display: flex;
@@ -432,7 +466,7 @@
     }
     .panel-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 10px;
       margin-top: 8px;
     }
@@ -510,7 +544,6 @@
     .align-right { flex-basis: 100%; display: flex; justify-content: flex-end; }
     .block-inner { width: 100%; position: relative; }
 
-    /* Sticker Libre */
     .block-item.align-sticker { position: absolute; z-index: 10; margin: 0; }
     .block-item.align-sticker .image-block-figure img { cursor: grab; }
     .editor-active .block-item.align-sticker .block-inner {
@@ -698,7 +731,7 @@
         border-right: none !important;
         border-left: none !important;
         border-bottom: 1px dashed var(--border-color) !important;
-        display: block !important;
+        display: flex !important;
       }
       .layout.nav-hidden .sidebar { display: none !important; }
       .main { width: 100% !important; }
@@ -720,9 +753,8 @@
     <aside class="sidebar" id="sidebarEl">
       <div class="site-title active" id="homeBtn">nombre del proyecto</div>
 
-      <div class="featured-box" id="featuredBox">
-        <img id="featuredImg" src="" alt="Vista previa">
-      </div>
+      <!-- Galería / Imagen de sección de categorías (modificable en tamaño, lugar y cantidad) -->
+      <div class="featured-area place-below-title align-img-left" id="featuredArea"></div>
 
       <ul class="category-list" id="categoryList"></ul>
 
@@ -758,8 +790,8 @@
           <button class="btn" id="toggleButtonAddBtn">+ botón (texto/foto)</button>
           <button class="btn" id="toggleDropdownAddBtn">+ desplegable</button>
           <button class="btn" id="addSpacerBlockBtn">+ separador</button>
-          <button class="btn" id="toggleNavBoxBtn">🧭 menú y categorías</button>
-          <button class="btn" id="toggleThemeBoxBtn">🎨 estilos y celular</button>
+          <button class="btn" id="toggleNavBoxBtn">🧭 menú y fotos cat.</button>
+          <button class="btn" id="toggleThemeBoxBtn">🎨 arcoíris, cursor y celu</button>
         </div>
         <div class="ctrl-group">
           <button class="btn" id="saveAllBtn">guardar cambios</button>
@@ -767,9 +799,9 @@
         </div>
       </div>
 
-      <!-- Panel: Configuración de Menú y Categorías -->
+      <!-- Panel: Configuración de Menú, Categorías e Imágenes de Categorías -->
       <div class="quick-add-box" id="navBox">
-        <strong style="font-size: 11px;">🧭 Configuración de Categorías y Menú:</strong>
+        <strong style="font-size: 11px;">🧭 Configuración de Categorías, Menú e Imágenes de Sección:</strong>
         <div class="panel-grid">
           <div class="panel-card">
             <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:bold; color:var(--accent-color);">
@@ -785,16 +817,13 @@
               <option value="bottom">Abajo (barra inferior fija)</option>
               <option value="floating">Flotante (caja suelta)</option>
             </select>
-          </div>
-
-          <div class="panel-card">
             <label>Ancho del menú lateral / flotante: <span id="navSizeLabel">28%</span></label>
             <input type="range" id="navSizeSlider" min="15" max="50" value="28" class="width-slider" style="width:100%;">
-            <label>Tamaño de letra categorías: <span id="catFontSizeLabel">13px</span></label>
-            <input type="range" id="catFontSizeSlider" min="10" max="24" value="13" class="width-slider" style="width:100%;">
           </div>
 
           <div class="panel-card">
+            <label>Tamaño de letra categorías: <span id="catFontSizeLabel">13px</span></label>
+            <input type="range" id="catFontSizeSlider" min="10" max="24" value="13" class="width-slider" style="width:100%;">
             <label>Formato de lista de categorías:</label>
             <select id="catListStyleSelect" class="rich-select">
               <option value="list">Lista vertical clásica</option>
@@ -811,16 +840,156 @@
           </div>
 
           <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">🖼️ Imagen(es) en sección categorías:</span>
             <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-              <input type="checkbox" id="showFeaturedToggle" checked> Mostrar foto portada en menú
+              <input type="checkbox" id="showFeaturedToggle" checked> Mostrar imágenes en menú
             </label>
-            <label>Link portada de Inicio (Drive/URL):</label>
-            <input type="text" id="homeFeaturedInput" placeholder="Pegar link de imagen..." style="margin:0;">
+            <label>Lugar dentro del menú:</label>
+            <select id="featuredPlaceSelect" class="rich-select">
+              <option value="below-title">Debajo del título</option>
+              <option value="above-title">Arriba del título</option>
+              <option value="below-cats">Debajo de las categorías</option>
+              <option value="bottom">Al final del menú</option>
+            </select>
+            <label>Alineación horizontal:</label>
+            <select id="featuredAlignSelect" class="rich-select">
+              <option value="left">Izquierda</option>
+              <option value="center">Centro</option>
+              <option value="right">Derecha</option>
+            </select>
+            <label>Tamaño de cada imagen: <span id="featuredSizeLabel">100%</span></label>
+            <input type="range" id="featuredSizeSlider" min="20" max="100" value="100" class="width-slider" style="width:100%;">
+          </div>
+
+          <div class="panel-card">
+            <label>Proporción / recorte de imagen:</label>
+            <select id="featuredRatioSelect" class="rich-select">
+              <option value="auto">Original (sin recortar)</option>
+              <option value="16 / 10">Panorámica (16:10)</option>
+              <option value="1 / 1">Cuadrada (1:1)</option>
+              <option value="4 / 5">Vertical (4:5)</option>
+              <option value="circle">Redonda (círculo)</option>
+            </select>
+            <label>Borde de imágenes del menú:</label>
+            <select id="featuredBorderSelect" class="rich-select">
+              <option value="dashed">Punteado</option>
+              <option value="none">Sin borde (sticker)</option>
+              <option value="solid">Continuo</option>
+              <option value="dotted">Puntos</option>
+            </select>
+            <label>Agregar más imágenes a esta sección (Drive/URL):</label>
+            <textarea id="featuredAddInput" rows="2" placeholder="Pegar 1 o varios links..." style="margin:0;"></textarea>
+            <div class="ctrl-group">
+              <button class="mini-btn" id="addSectionImgBtn">+ agregar a sección actual</button>
+              <button class="mini-btn" id="addGlobalImgBtn">+ agregar fijas en todo el menú</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Caja para agregar Botón (Texto o Foto) en Categorías o Área Principal -->
+      <!-- Panel: Estilos Globales, Arcoíris, Cursor, Favicon y Celular -->
+      <div class="quick-add-box" id="themeBox">
+        <strong style="font-size: 11px;">🎨 Paleta, Arcoíris Personalizado, Cursor, Favicon y Celular:</strong>
+        <div class="panel-grid">
+          <div class="panel-card">
+            <span style="font-weight:bold;">Paleta base y tipografía:</span>
+            <div class="ctrl-group">
+              <label class="color-wrap">Fondo <input type="color" id="themeBgInput" value="#ffffff"></label>
+              <label class="color-wrap">Texto <input type="color" id="themeTextInput" value="#111111"></label>
+              <label class="color-wrap">Acento <input type="color" id="themeAccentInput" value="#ff1493"></label>
+              <label class="color-wrap">Bordes <input type="color" id="themeBorderInput" value="#111111"></label>
+            </div>
+            <label>Tipografía principal:</label>
+            <select id="themeFontSelect" class="rich-select">
+              <option value="Arial, Helvetica, sans-serif">Arial / Helvética</option>
+              <option value="'Courier New', Courier, monospace">Courier (Máquina)</option>
+              <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="Verdana, Geneva, sans-serif">Verdana</option>
+              <option value="'Comic Sans MS', cursive, sans-serif">Comic Sans</option>
+            </select>
+            <label>Espacio entre bloques compu: <span id="blockGapLabel">14px</span></label>
+            <input type="range" id="blockGapSlider" min="0" max="50" value="14" class="width-slider" style="width:100%;">
+          </div>
+
+          <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">🌈 Colores del Arcoíris:</span>
+            <div class="ctrl-group">
+              <label class="color-wrap">1 <input type="color" id="rbColor1" value="#ff0000"></label>
+              <label class="color-wrap">2 <input type="color" id="rbColor2" value="#ff7f00"></label>
+              <label class="color-wrap">3 <input type="color" id="rbColor3" value="#ffff00"></label>
+              <label class="color-wrap">4 <input type="color" id="rbColor4" value="#00ff00"></label>
+            </div>
+            <div class="ctrl-group">
+              <label class="color-wrap">5 <input type="color" id="rbColor5" value="#00ffff"></label>
+              <label class="color-wrap">6 <input type="color" id="rbColor6" value="#0000ff"></label>
+              <label class="color-wrap">7 <input type="color" id="rbColor7" value="#ff00ff"></label>
+              <label class="color-wrap">Letra <input type="color" id="rbTextColor" value="#111111"></label>
+            </div>
+            <div class="ctrl-group">
+              <button class="mini-btn" id="rbPresetClassic">clásico</button>
+              <button class="mini-btn" id="rbPresetFluo">celeste/rosa fluo</button>
+              <button class="mini-btn" id="rbPresetPastel">pastel</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">🖱️ Cursor y ⭐ Favicon:</span>
+            <label>Cursor del mouse:</label>
+            <select id="cursorModeSelect" class="rich-select">
+              <option value="default">Normal del sistema</option>
+              <option value="crosshair">Cruz (+)</option>
+              <option value="star">Estrella ✦</option>
+              <option value="heart">Corazón ♥</option>
+              <option value="sparkle">Destello 💫</option>
+              <option value="custom">Imagen personalizada (URL / Drive)</option>
+            </select>
+            <input type="text" id="cursorUrlInput" placeholder="URL imagen cursor (si elegís personalizada)..." style="margin:0; display:none;">
+            <label>Favicon (ícono de la pestaña):</label>
+            <select id="faviconModeSelect" class="rich-select">
+              <option value="none">Por defecto</option>
+              <option value="star">Estrella ✦</option>
+              <option value="heart">Corazón ♥</option>
+              <option value="circle">Círculo color acento</option>
+              <option value="custom">Imagen personalizada (URL / Drive)</option>
+            </select>
+            <input type="text" id="faviconUrlInput" placeholder="URL imagen favicon (PNG/ICO/Drive)..." style="margin:0; display:none;">
+          </div>
+
+          <div class="panel-card">
+            <span style="font-weight:bold; color:var(--accent-color);">📱 Ajustes para Celular:</span>
+            <label>Posición del menú en celular:</label>
+            <select id="mobNavPosSelect" class="rich-select">
+              <option value="top">Arriba (antes del contenido)</option>
+              <option value="bottom">Abajo (al final / barra inferior)</option>
+              <option value="fixed-bottom">Fijo abajo siempre visible</option>
+            </select>
+            <label>Estilo categorías en celular:</label>
+            <select id="mobCatLayoutSelect" class="rich-select">
+              <option value="wrap">Etiquetas envolventes</option>
+              <option value="stack">Lista vertical</option>
+              <option value="scroll">Carrusel horizontal deslizable</option>
+            </select>
+            <div class="ctrl-group">
+              <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+                <input type="checkbox" id="mobShowFeaturedToggle" checked> Fotos menú
+              </label>
+              <label style="display:flex; align-items:center; gap:4px; cursor:pointer;">
+                <input type="checkbox" id="mobStickersFreeToggle"> Stickers libres
+              </label>
+            </div>
+            <label>Letra cat. celu: <span id="mobCatSizeLabel">12px</span> | Espacio: <span id="mobBlockGapLabel">10px</span></label>
+            <div class="ctrl-group">
+              <input type="range" id="mobCatSizeSlider" min="9" max="20" value="12" class="width-slider" style="width:48%;">
+              <input type="range" id="mobBlockGapSlider" min="0" max="40" value="10" class="width-slider" style="width:48%;">
+            </div>
+            <input type="hidden" id="mobPaddingSlider" value="12">
+            <span id="mobPaddingLabel" style="display:none;">12px</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Caja para agregar Botón (Texto o Foto) -->
       <div class="quick-add-box" id="quickButtonBox">
         <strong style="font-size: 11px;">🔘 Agregar Botón (Texto o Foto):</strong>
         <div class="panel-grid">
@@ -911,65 +1080,6 @@
             <label>Opciones internas (1 por línea: Texto | URL):</label>
             <textarea id="ddItemsInput" rows="3" placeholder="Opción 1 | https://...&#10;Opción 2 | https://..." style="margin:0;"></textarea>
             <button class="btn" id="insertDropdownBtn">+ insertar desplegable</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Panel: Estilos Globales y Ajustes Avanzados de Celular -->
-      <div class="quick-add-box" id="themeBox">
-        <strong style="font-size: 11px;">🎨 Estilos Globales y Edición Avanzada de Celular:</strong>
-        <div class="panel-grid">
-          <div class="panel-card">
-            <span style="font-weight:bold;">Paleta de colores:</span>
-            <div class="ctrl-group">
-              <label class="color-wrap">Fondo <input type="color" id="themeBgInput" value="#ffffff"></label>
-              <label class="color-wrap">Texto <input type="color" id="themeTextInput" value="#111111"></label>
-              <label class="color-wrap">Acento <input type="color" id="themeAccentInput" value="#ff1493"></label>
-              <label class="color-wrap">Bordes <input type="color" id="themeBorderInput" value="#111111"></label>
-            </div>
-            <label>Tipografía principal:</label>
-            <select id="themeFontSelect" class="rich-select">
-              <option value="Arial, Helvetica, sans-serif">Arial / Helvética</option>
-              <option value="'Courier New', Courier, monospace">Courier (Máquina)</option>
-              <option value="'Times New Roman', Times, serif">Times New Roman</option>
-              <option value="Georgia, serif">Georgia</option>
-              <option value="Verdana, Geneva, sans-serif">Verdana</option>
-              <option value="'Comic Sans MS', cursive, sans-serif">Comic Sans</option>
-            </select>
-            <label>Espacio entre bloques compu: <span id="blockGapLabel">14px</span></label>
-            <input type="range" id="blockGapSlider" min="0" max="50" value="14" class="width-slider" style="width:100%;">
-          </div>
-
-          <div class="panel-card">
-            <span style="font-weight:bold; color:var(--accent-color);">📱 Ajustes exclusivos para Celular:</span>
-            <label>Posición del menú en celular:</label>
-            <select id="mobNavPosSelect" class="rich-select">
-              <option value="top">Arriba (antes del contenido)</option>
-              <option value="bottom">Abajo (al final / barra inferior)</option>
-              <option value="fixed-bottom">Fijo abajo siempre visible</option>
-            </select>
-            <label>Estilo categorías en celular:</label>
-            <select id="mobCatLayoutSelect" class="rich-select">
-              <option value="wrap">Etiquetas envolventes (varias líneas)</option>
-              <option value="stack">Lista vertical (una debajo de otra)</option>
-              <option value="scroll">Carrusel horizontal deslizable</option>
-            </select>
-            <label>Letra categorías en celular: <span id="mobCatSizeLabel">12px</span></label>
-            <input type="range" id="mobCatSizeSlider" min="9" max="20" value="12" class="width-slider" style="width:100%;">
-          </div>
-
-          <div class="panel-card">
-            <span style="font-weight:bold; color:var(--accent-color);">📱 Más controles Celular:</span>
-            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-              <input type="checkbox" id="mobShowFeaturedToggle" checked> Mostrar foto portada en celular
-            </label>
-            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
-              <input type="checkbox" id="mobStickersFreeToggle"> Mantener stickers flotando en celular
-            </label>
-            <label>Espacio entre bloques celular: <span id="mobBlockGapLabel">10px</span></label>
-            <input type="range" id="mobBlockGapSlider" min="0" max="40" value="10" class="width-slider" style="width:100%;">
-            <label>Margen interno celular: <span id="mobPaddingLabel">12px</span></label>
-            <input type="range" id="mobPaddingSlider" min="4" max="32" value="12" class="width-slider" style="width:100%;">
           </div>
         </div>
       </div>
@@ -1079,6 +1189,17 @@
         "catListStyle": "list",
         "catActiveStyle": "rainbow",
         "showFeatured": true,
+        "featuredPlace": "below-title",
+        "featuredAlign": "left",
+        "featuredSize": 100,
+        "featuredRatio": "auto",
+        "featuredBorder": "dashed",
+        "rainbowColors": ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff"],
+        "rainbowText": "#111111",
+        "cursorMode": "default",
+        "cursorUrl": "",
+        "faviconMode": "none",
+        "faviconUrl": "",
         "mobNavPos": "top",
         "mobCatLayout": "wrap",
         "mobCatSize": 12,
@@ -1087,10 +1208,12 @@
         "mobBlockGap": 10,
         "mobPadding": 12
       },
+      "globalFeaturedImages": [],
       "sidebarWidgets": [],
       "home": {
         "name": "inicio",
         "featuredImg": "",
+        "featuredImages": [],
         "blocks": [
           {
             "id": "b-welcome",
@@ -1101,7 +1224,7 @@
             "borderStyle": "dashed",
             "borderWidth": 1,
             "borderColor": "#111111",
-            "html": "<h1>Plantilla Base</h1><p>Hacé clic en <b>+ editar bloques</b> arriba a la derecha para armar tu web, ocultar categorías, sumar botones de texto/foto y desplegables con efectos hover.</p>"
+            "html": "<h1>Plantilla Base</h1><p>Hacé clic en <b>+ editar bloques</b> arriba a la derecha para armar tu web, modificar las imágenes de la sección de categorías, cambiar el cursor, favicon y los colores del arcoíris.</p>"
           }
         ]
       },
@@ -1110,6 +1233,7 @@
           "id": "cat-1",
           "name": "Categoría 1",
           "featuredImg": "",
+          "featuredImages": [],
           "blocks": [
             {
               "id": "b-cat1-txt",
@@ -1128,6 +1252,7 @@
           "id": "cat-2",
           "name": "Categoría 2",
           "featuredImg": "",
+          "featuredImages": [],
           "blocks": []
         }
       ]
@@ -1135,7 +1260,7 @@
   </script>
 
   <script>
-    const STORAGE_KEY = "plantilla_web_base_v2";
+    const STORAGE_KEY = "plantilla_web_base_v3";
     let portfolioData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || JSON.parse(JSON.stringify(INITIAL_DATA));
 
     const defaultTheme = {
@@ -1144,13 +1269,32 @@
       hideSidebar: false,
       navPosition: "left", navSize: 28, catFontSize: 13, catListStyle: "list",
       catActiveStyle: "rainbow", showFeatured: true,
+      featuredPlace: "below-title", featuredAlign: "left", featuredSize: 100,
+      featuredRatio: "auto", featuredBorder: "dashed",
+      rainbowColors: ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff"],
+      rainbowText: "#111111",
+      cursorMode: "default", cursorUrl: "",
+      faviconMode: "none", faviconUrl: "",
       mobNavPos: "top", mobCatLayout: "wrap", mobCatSize: 12,
       mobShowFeatured: true, mobStickersFree: false, mobBlockGap: 10, mobPadding: 12
     };
     portfolioData.theme = Object.assign({}, defaultTheme, portfolioData.theme || {});
+    if (!Array.isArray(portfolioData.theme.rainbowColors) || portfolioData.theme.rainbowColors.length < 7) {
+      portfolioData.theme.rainbowColors = [...defaultTheme.rainbowColors];
+    }
     if (!Array.isArray(portfolioData.sidebarWidgets)) portfolioData.sidebarWidgets = [];
+    if (!Array.isArray(portfolioData.globalFeaturedImages)) portfolioData.globalFeaturedImages = [];
+    if (!Array.isArray(portfolioData.home.featuredImages)) {
+      portfolioData.home.featuredImages = portfolioData.home.featuredImg ? [portfolioData.home.featuredImg] : [];
+    }
+    portfolioData.categories.forEach(c => {
+      if (!Array.isArray(c.featuredImages)) {
+        c.featuredImages = c.featuredImg ? [c.featuredImg] : [];
+      }
+    });
 
     let activeSectionId = "home";
+    let hoveredSectionId = null;
     let editorOpen = false;
     let previewDevice = "desktop";
     let draggedIndex = null;
@@ -1160,13 +1304,14 @@
 
     const appRoot = document.getElementById("appRoot");
     const dynamicThemeStyle = document.getElementById("dynamic-theme-style");
+    const dynamicCursorStyle = document.getElementById("dynamic-cursor-style");
+    const dynamicFavicon = document.getElementById("dynamicFavicon");
     const categoryListEl = document.getElementById("categoryList");
     const sidebarCustomAreaEl = document.getElementById("sidebarCustomArea");
     const newCatInputEl = document.getElementById("newCatInput");
     const addCatBtn = document.getElementById("addCatBtn");
     const blocksContainerEl = document.getElementById("blocksContainer");
-    const featuredBoxEl = document.getElementById("featuredBox");
-    const featuredImgEl = document.getElementById("featuredImg");
+    const featuredAreaEl = document.getElementById("featuredArea");
     const currentViewLabelEl = document.getElementById("currentViewLabel");
     const homeBtn = document.getElementById("homeBtn");
     const mobileSimNavEl = document.getElementById("mobileSimNav");
@@ -1191,7 +1336,7 @@
     const quickButtonBoxEl = document.getElementById("quickButtonBox");
     const quickDropdownBoxEl = document.getElementById("quickDropdownBox");
 
-    // Controles de navegación y categorías
+    // Controles de navegación y fotos de categorías
     const hideSidebarToggle = document.getElementById("hideSidebarToggle");
     const siteTitleInput = document.getElementById("siteTitleInput");
     const navPositionSelect = document.getElementById("navPositionSelect");
@@ -1202,7 +1347,26 @@
     const catListStyleSelect = document.getElementById("catListStyleSelect");
     const catActiveStyleSelect = document.getElementById("catActiveStyleSelect");
     const showFeaturedToggle = document.getElementById("showFeaturedToggle");
-    const homeFeaturedInput = document.getElementById("homeFeaturedInput");
+    const featuredPlaceSelect = document.getElementById("featuredPlaceSelect");
+    const featuredAlignSelect = document.getElementById("featuredAlignSelect");
+    const featuredSizeSlider = document.getElementById("featuredSizeSlider");
+    const featuredSizeLabel = document.getElementById("featuredSizeLabel");
+    const featuredRatioSelect = document.getElementById("featuredRatioSelect");
+    const featuredBorderSelect = document.getElementById("featuredBorderSelect");
+    const featuredAddInput = document.getElementById("featuredAddInput");
+    const addSectionImgBtn = document.getElementById("addSectionImgBtn");
+    const addGlobalImgBtn = document.getElementById("addGlobalImgBtn");
+
+    // Controles de arcoíris, cursor y favicon
+    const rbInputs = [1, 2, 3, 4, 5, 6, 7].map(i => document.getElementById("rbColor" + i));
+    const rbTextColorInput = document.getElementById("rbTextColor");
+    const rbPresetClassic = document.getElementById("rbPresetClassic");
+    const rbPresetFluo = document.getElementById("rbPresetFluo");
+    const rbPresetPastel = document.getElementById("rbPresetPastel");
+    const cursorModeSelect = document.getElementById("cursorModeSelect");
+    const cursorUrlInput = document.getElementById("cursorUrlInput");
+    const faviconModeSelect = document.getElementById("faviconModeSelect");
+    const faviconUrlInput = document.getElementById("faviconUrlInput");
 
     // Controles de botón personalizado
     const btnZoneSelect = document.getElementById("btnZoneSelect");
@@ -1302,8 +1466,52 @@
       }
     });
 
+    function buildRainbowGradient(colors) {
+      const list = [...colors, colors[0]];
+      return `linear-gradient(90deg, ${list.join(", ")})`;
+    }
+
+    function buildCursorCSS(t) {
+      const mode = t.cursorMode || "default";
+      if (mode === "default") return "";
+      if (mode === "crosshair") return `* { cursor: crosshair !important; }`;
+      if (mode === "custom" && t.cursorUrl) {
+        return `* { cursor: url("${t.cursorUrl}") 8 8, auto !important; }`;
+      }
+      const color = encodeURIComponent(t.accent || "#ff1493");
+      const border = encodeURIComponent(t.border || "#111111");
+      let svg = "";
+      if (mode === "star") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="12,1 15,9 23,9 16.5,14 19,22 12,17 5,22 7.5,14 1,9 9,9" fill="${color}" stroke="${border}" stroke-width="1.5"/></svg>`;
+      } else if (mode === "heart") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="${color}" stroke="${border}" stroke-width="1.5"/></svg>`;
+      } else if (mode === "sparkle") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z" fill="${color}" stroke="${border}" stroke-width="1.3"/></svg>`;
+      }
+      if (!svg) return "";
+      return `* { cursor: url('data:image/svg+xml;utf8,${svg}') 12 12, auto !important; }`;
+    }
+
+    function buildFaviconHref(t) {
+      const mode = t.faviconMode || "none";
+      if (mode === "none") return "";
+      if (mode === "custom" && t.faviconUrl) return t.faviconUrl;
+      const color = encodeURIComponent(t.accent || "#ff1493");
+      const border = encodeURIComponent(t.border || "#111111");
+      let svg = "";
+      if (mode === "star") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><polygon points="16,2 20,12 30,12 22,19 25,29 16,23 7,29 10,19 2,12 12,12" fill="${color}" stroke="${border}" stroke-width="2"/></svg>`;
+      } else if (mode === "heart") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16 28l-2-1.8C7 20 3 16 3 11a7 7 0 0 1 13-3.5A7 7 0 0 1 29 11c0 5-4 9-11 15.2L16 28z" fill="${color}" stroke="${border}" stroke-width="2"/></svg>`;
+      } else if (mode === "circle") {
+        svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="${color}" stroke="${border}" stroke-width="2"/></svg>`;
+      }
+      return svg ? `data:image/svg+xml;utf8,${svg}` : "";
+    }
+
     function applyGlobalTheme() {
       const t = portfolioData.theme;
+      const rbGrad = buildRainbowGradient(t.rainbowColors);
       dynamicThemeStyle.textContent = `
         :root {
           --bg-color: ${t.bg};
@@ -1315,8 +1523,15 @@
           --cat-font-size: ${t.catFontSize}px;
           --block-gap: ${t.blockGap}px;
           --mob-block-gap: ${t.mobBlockGap}px;
+          --rainbow-grad: ${rbGrad};
+          --rainbow-text: ${t.rainbowText || "#111111"};
         }
       `;
+
+      dynamicCursorStyle.textContent = buildCursorCSS(t);
+      const favHref = buildFaviconHref(t);
+      if (favHref) dynamicFavicon.href = favHref;
+      else dynamicFavicon.removeAttribute("href");
 
       appRoot.classList.toggle("nav-hidden", !!t.hideSidebar);
       hideSidebarToggle.checked = !!t.hideSidebar;
@@ -1330,7 +1545,11 @@
       categoryListEl.classList.remove("cat-style-list", "cat-style-pills", "cat-style-grid");
       categoryListEl.classList.add("cat-style-" + (t.catListStyle || "list"));
 
-      featuredBoxEl.classList.toggle("hidden-box", !t.showFeatured);
+      featuredAreaEl.classList.toggle("hidden-box", !t.showFeatured);
+      featuredAreaEl.classList.remove("place-above-title", "place-below-title", "place-below-cats", "place-bottom");
+      featuredAreaEl.classList.add("place-" + (t.featuredPlace || "below-title"));
+      featuredAreaEl.classList.remove("align-img-left", "align-img-center", "align-img-right");
+      featuredAreaEl.classList.add("align-img-" + (t.featuredAlign || "left"));
 
       homeBtn.textContent = portfolioData.siteTitle || "nombre del proyecto";
       siteTitleInput.value = portfolioData.siteTitle || "nombre del proyecto";
@@ -1342,7 +1561,12 @@
       catListStyleSelect.value = t.catListStyle;
       catActiveStyleSelect.value = t.catActiveStyle;
       showFeaturedToggle.checked = t.showFeatured;
-      homeFeaturedInput.value = portfolioData.home.featuredImg || "";
+      featuredPlaceSelect.value = t.featuredPlace || "below-title";
+      featuredAlignSelect.value = t.featuredAlign || "left";
+      featuredSizeSlider.value = t.featuredSize || 100;
+      featuredSizeLabel.textContent = (t.featuredSize || 100) + "%";
+      featuredRatioSelect.value = t.featuredRatio || "auto";
+      featuredBorderSelect.value = t.featuredBorder || "dashed";
 
       themeBgInput.value = t.bg;
       themeTextInput.value = t.text;
@@ -1351,6 +1575,17 @@
       themeFontSelect.value = t.font;
       blockGapSlider.value = t.blockGap;
       blockGapLabel.textContent = t.blockGap + "px";
+
+      rbInputs.forEach((inp, i) => { inp.value = t.rainbowColors[i] || "#ff0000"; });
+      rbTextColorInput.value = t.rainbowText || "#111111";
+
+      cursorModeSelect.value = t.cursorMode || "default";
+      cursorUrlInput.style.display = t.cursorMode === "custom" ? "block" : "none";
+      cursorUrlInput.value = t.cursorUrl || "";
+
+      faviconModeSelect.value = t.faviconMode || "none";
+      faviconUrlInput.style.display = t.faviconMode === "custom" ? "block" : "none";
+      faviconUrlInput.value = t.faviconUrl || "";
 
       mobNavPosSelect.value = t.mobNavPos;
       mobCatLayoutSelect.value = t.mobCatLayout;
@@ -1370,12 +1605,12 @@
       }
     }
 
+    // Listeners de navegación y galería de categorías
     hideSidebarToggle.addEventListener("change", () => {
       portfolioData.theme.hideSidebar = hideSidebarToggle.checked;
       applyGlobalTheme();
       saveToStorage();
     });
-
     siteTitleInput.addEventListener("input", () => {
       portfolioData.siteTitle = siteTitleInput.value;
       homeBtn.textContent = portfolioData.siteTitle || "inicio";
@@ -1411,15 +1646,119 @@
     showFeaturedToggle.addEventListener("change", () => {
       portfolioData.theme.showFeatured = showFeaturedToggle.checked;
       applyGlobalTheme();
+      renderFeaturedArea();
       saveToStorage();
     });
-    homeFeaturedInput.addEventListener("change", () => {
-      const urls = extractImageUrls(homeFeaturedInput.value);
-      portfolioData.home.featuredImg = urls[0] || homeFeaturedInput.value.trim();
+    featuredPlaceSelect.addEventListener("change", () => {
+      portfolioData.theme.featuredPlace = featuredPlaceSelect.value;
+      applyGlobalTheme();
       saveToStorage();
-      updateView();
+    });
+    featuredAlignSelect.addEventListener("change", () => {
+      portfolioData.theme.featuredAlign = featuredAlignSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    featuredSizeSlider.addEventListener("input", () => {
+      portfolioData.theme.featuredSize = parseInt(featuredSizeSlider.value, 10);
+      applyGlobalTheme();
+      renderFeaturedArea();
+    });
+    featuredSizeSlider.addEventListener("change", saveToStorage);
+
+    featuredRatioSelect.addEventListener("change", () => {
+      portfolioData.theme.featuredRatio = featuredRatioSelect.value;
+      renderFeaturedArea();
+      saveToStorage();
+    });
+    featuredBorderSelect.addEventListener("change", () => {
+      portfolioData.theme.featuredBorder = featuredBorderSelect.value;
+      renderFeaturedArea();
+      saveToStorage();
     });
 
+    addSectionImgBtn.addEventListener("click", () => {
+      const sec = getCurrentSection();
+      if (!sec) return;
+      const urls = extractImageUrls(featuredAddInput.value);
+      if (urls.length > 0) {
+        sec.featuredImages = sec.featuredImages || [];
+        sec.featuredImages.push(...urls);
+        featuredAddInput.value = "";
+        saveToStorage();
+        renderFeaturedArea();
+      }
+    });
+
+    addGlobalImgBtn.addEventListener("click", () => {
+      const urls = extractImageUrls(featuredAddInput.value);
+      if (urls.length > 0) {
+        portfolioData.globalFeaturedImages = portfolioData.globalFeaturedImages || [];
+        portfolioData.globalFeaturedImages.push(...urls);
+        featuredAddInput.value = "";
+        saveToStorage();
+        renderFeaturedArea();
+      }
+    });
+
+    // Listeners arcoíris, cursor y favicon
+    rbInputs.forEach((inp, i) => {
+      inp.addEventListener("input", () => {
+        portfolioData.theme.rainbowColors[i] = inp.value;
+        applyGlobalTheme();
+      });
+      inp.addEventListener("change", saveToStorage);
+    });
+    rbTextColorInput.addEventListener("input", () => {
+      portfolioData.theme.rainbowText = rbTextColorInput.value;
+      applyGlobalTheme();
+    });
+    rbTextColorInput.addEventListener("change", saveToStorage);
+
+    rbPresetClassic.addEventListener("click", () => {
+      portfolioData.theme.rainbowColors = ["#ff0000", "#ff7f00", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff"];
+      portfolioData.theme.rainbowText = "#111111";
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    rbPresetFluo.addEventListener("click", () => {
+      portfolioData.theme.rainbowColors = ["#00f0ff", "#ff1493", "#fff000", "#00ff88", "#00f0ff", "#ff66cc", "#00f0ff"];
+      portfolioData.theme.rainbowText = "#111111";
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    rbPresetPastel.addEventListener("click", () => {
+      portfolioData.theme.rainbowColors = ["#ffb3ba", "#ffdfba", "#ffffba", "#baffc9", "#bae1ff", "#e2baff", "#ffb3ba"];
+      portfolioData.theme.rainbowText = "#111111";
+      applyGlobalTheme();
+      saveToStorage();
+    });
+
+    cursorModeSelect.addEventListener("change", () => {
+      portfolioData.theme.cursorMode = cursorModeSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    cursorUrlInput.addEventListener("change", () => {
+      const urls = extractImageUrls(cursorUrlInput.value);
+      portfolioData.theme.cursorUrl = urls[0] || cursorUrlInput.value.trim();
+      applyGlobalTheme();
+      saveToStorage();
+    });
+
+    faviconModeSelect.addEventListener("change", () => {
+      portfolioData.theme.faviconMode = faviconModeSelect.value;
+      applyGlobalTheme();
+      saveToStorage();
+    });
+    faviconUrlInput.addEventListener("change", () => {
+      const urls = extractImageUrls(faviconUrlInput.value);
+      portfolioData.theme.faviconUrl = urls[0] || faviconUrlInput.value.trim();
+      applyGlobalTheme();
+      saveToStorage();
+    });
+
+    // Listeners paleta base y celular
     [
       { el: themeBgInput, key: "bg" },
       { el: themeTextInput, key: "text" },
@@ -1476,12 +1815,6 @@
       applyGlobalTheme();
     });
     mobBlockGapSlider.addEventListener("change", saveToStorage);
-
-    mobPaddingSlider.addEventListener("input", () => {
-      portfolioData.theme.mobPadding = parseInt(mobPaddingSlider.value, 10);
-      applyGlobalTheme();
-    });
-    mobPaddingSlider.addEventListener("change", saveToStorage);
 
     function setDevicePreview(mode) {
       previewDevice = mode;
@@ -1565,32 +1898,98 @@
       if (Math.abs(diff) > 40) stepLightbox(diff > 0 ? 1 : -1);
     }, { passive: true });
 
+    function getSectionById(id) {
+      if (id === "home") return portfolioData.home;
+      return portfolioData.categories.find(c => c.id === id);
+    }
+
     function getCurrentSection() {
-      if (activeSectionId === "home") return portfolioData.home;
-      return portfolioData.categories.find(c => c.id === activeSectionId);
+      return getSectionById(activeSectionId);
     }
 
-    function getSectionPreviewImage(section) {
-      if (section.featuredImg) return section.featuredImg;
-      const firstImgBlock = section.blocks.find(b => b.type === "image" && b.src);
-      if (firstImgBlock) return firstImgBlock.src;
-      const firstGridBlock = section.blocks.find(b => b.type === "grid" && b.images && b.images.length > 0);
-      if (firstGridBlock) return firstGridBlock.images[0];
-      const firstVideoBlock = section.blocks.find(b => b.type === "youtube" && b.videoId);
-      if (firstVideoBlock) return `https://img.youtube.com/vi/${firstVideoBlock.videoId}/hqdefault.jpg`;
-      return portfolioData.home.featuredImg || "";
-    }
+    function getSectionPreviewImages(section) {
+      const globals = (portfolioData.globalFeaturedImages || []).map(src => ({ src, isGlobal: true }));
+      if (!section) return globals;
 
-    function setFeaturedImage(src) {
-      if (!src) {
-        featuredImgEl.removeAttribute("src");
-        return;
+      let secImgs = [];
+      if (Array.isArray(section.featuredImages) && section.featuredImages.length > 0) {
+        secImgs = section.featuredImages.map((src, idx) => ({ src, isGlobal: false, idx }));
+      } else {
+        const firstImgBlock = section.blocks.find(b => b.type === "image" && b.src);
+        if (firstImgBlock) secImgs = [{ src: firstImgBlock.src, isGlobal: false, auto: true }];
+        else {
+          const firstGridBlock = section.blocks.find(b => b.type === "grid" && b.images && b.images.length > 0);
+          if (firstGridBlock) secImgs = [{ src: firstGridBlock.images[0], isGlobal: false, auto: true }];
+          else {
+            const firstVideoBlock = section.blocks.find(b => b.type === "youtube" && b.videoId);
+            if (firstVideoBlock) secImgs = [{ src: `https://img.youtube.com/vi/${firstVideoBlock.videoId}/hqdefault.jpg`, isGlobal: false, auto: true }];
+          }
+        }
       }
-      featuredImgEl.onerror = function() {
-        this.onerror = null;
-        this.src = getFallbackDriveUrl(src);
-      };
-      featuredImgEl.src = src;
+      return [...globals, ...secImgs];
+    }
+
+    function renderFeaturedArea(targetSecId) {
+      const sec = getSectionById(targetSecId || hoveredSectionId || activeSectionId);
+      const t = portfolioData.theme;
+      featuredAreaEl.innerHTML = "";
+      if (!t.showFeatured) return;
+
+      const items = getSectionPreviewImages(sec);
+      if (items.length === 0) return;
+
+      const sizePct = t.featuredSize || 100;
+      const ratio = t.featuredRatio || "auto";
+      const borderSt = t.featuredBorder || "dashed";
+
+      items.forEach((item, listIdx) => {
+        const card = document.createElement("div");
+        card.className = "featured-img-card";
+        card.style.width = sizePct >= 98 ? "100%" : `calc(${sizePct}% - 4px)`;
+
+        const img = document.createElement("img");
+        img.src = item.src;
+        img.alt = "Imagen de sección";
+        if (ratio === "circle") {
+          img.style.aspectRatio = "1 / 1";
+          img.style.borderRadius = "50%";
+          img.style.objectFit = "cover";
+        } else if (ratio !== "auto") {
+          img.style.aspectRatio = ratio;
+          img.style.objectFit = "cover";
+        } else {
+          img.style.height = "auto";
+        }
+        img.style.border = borderSt === "none" ? "none" : `1px ${borderSt} var(--border-color)`;
+
+        img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(item.src); };
+        img.addEventListener("click", () => openLightbox(items.map(x => x.src), listIdx, ""));
+        card.appendChild(img);
+
+        if (!item.auto) {
+          const act = document.createElement("div");
+          act.className = "featured-img-card-actions";
+          const delBtn = document.createElement("button");
+          delBtn.className = "mini-btn";
+          delBtn.textContent = "x";
+          delBtn.title = item.isGlobal ? "Quitar imagen fija global" : "Quitar imagen de esta sección";
+          delBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            if (item.isGlobal) {
+              const gIdx = portfolioData.globalFeaturedImages.indexOf(item.src);
+              if (gIdx > -1) portfolioData.globalFeaturedImages.splice(gIdx, 1);
+            } else if (sec && Array.isArray(sec.featuredImages)) {
+              sec.featuredImages.splice(item.idx, 1);
+            }
+            saveToStorage();
+            renderFeaturedArea();
+          });
+          act.appendChild(delBtn);
+          card.appendChild(act);
+        }
+
+        featuredAreaEl.appendChild(card);
+      });
     }
 
     function renderMobileSimNav() {
@@ -1622,10 +2021,10 @@
       mobileSimNavEl.appendChild(titleDiv);
 
       const sec = getCurrentSection();
-      const prevSrc = sec ? getSectionPreviewImage(sec) : "";
-      if (t.mobShowFeatured && prevSrc) {
+      const prevImgs = getSectionPreviewImages(sec);
+      if (t.mobShowFeatured && prevImgs.length > 0) {
         const img = document.createElement("img");
-        img.src = prevSrc;
+        img.src = prevImgs[0].src;
         img.style.width = "100%";
         img.style.aspectRatio = "16 / 10";
         img.style.objectFit = "cover";
@@ -1656,7 +2055,7 @@
       mobileSimNavEl.appendChild(ul);
     }
 
-    function buildCustomWidgetDOM(item, onUpdate) {
+    function buildCustomWidgetDOM(item) {
       const hoverClass = item.hoverEffect && item.hoverEffect !== "none" ? ` hover-fx-${item.hoverEffect}` : "";
 
       if (item.type === "button") {
@@ -1857,7 +2256,7 @@
         ctrl.appendChild(delBtn);
 
         box.appendChild(ctrl);
-        box.appendChild(buildCustomWidgetDOM(w, renderSidebarCustomWidgets));
+        box.appendChild(buildCustomWidgetDOM(w));
         sidebarCustomAreaEl.appendChild(box);
       });
     }
@@ -1939,11 +2338,16 @@
 
         li.appendChild(actionsSpan);
         li.addEventListener("mouseenter", () => {
-          const preview = getSectionPreviewImage(cat);
-          if (preview) setFeaturedImage(preview);
+          hoveredSectionId = cat.id;
+          renderFeaturedArea(cat.id);
+        });
+        li.addEventListener("mouseleave", () => {
+          hoveredSectionId = null;
+          renderFeaturedArea(activeSectionId);
         });
         li.addEventListener("click", () => {
           activeSectionId = cat.id;
+          hoveredSectionId = null;
           updateView();
         });
         categoryListEl.appendChild(li);
@@ -1958,7 +2362,7 @@
       const val = newCatInputEl.value.trim();
       if (!val) return;
       const newId = "cat-" + Date.now();
-      portfolioData.categories.push({ id: newId, name: val, featuredImg: "", blocks: [] });
+      portfolioData.categories.push({ id: newId, name: val, featuredImg: "", featuredImages: [], blocks: [] });
       newCatInputEl.value = "";
       activeSectionId = newId;
       saveToStorage();
@@ -2162,7 +2566,7 @@
       const section = getCurrentSection();
       if (!section) return;
 
-      setFeaturedImage(getSectionPreviewImage(section));
+      renderFeaturedArea();
 
       section.blocks.forEach((block, index) => {
         if (!block.width) block.width = (block.type === "image" ? 48 : (block.type === "button" || block.type === "dropdown" ? 25 : 100));
@@ -2370,7 +2774,7 @@
         });
 
         if (block.type === "button" || block.type === "dropdown") {
-          const widgetNode = buildCustomWidgetDOM(block, renderBlocks);
+          const widgetNode = buildCustomWidgetDOM(block);
 
           const editWidgetBtn = document.createElement("button");
           editWidgetBtn.className = "mini-btn";
@@ -2524,9 +2928,17 @@
           appendBorderControls(rightCtrl, block, () => applyElementBorder(img, block));
 
           const coverBtn = document.createElement("button");
-          coverBtn.className = "mini-btn" + (section.featuredImg === block.src ? " selected" : "");
-          coverBtn.textContent = "portada";
-          coverBtn.addEventListener("click", () => { section.featuredImg = block.src; saveToStorage(); renderBlocks(); });
+          coverBtn.className = "mini-btn";
+          coverBtn.textContent = "+ menú cat.";
+          coverBtn.title = "Agregar esta foto a la sección de categorías";
+          coverBtn.addEventListener("click", () => {
+            section.featuredImages = section.featuredImages || [];
+            if (!section.featuredImages.includes(block.src)) {
+              section.featuredImages.push(block.src);
+            }
+            saveToStorage();
+            renderFeaturedArea();
+          });
           rightCtrl.appendChild(coverBtn);
           rightCtrl.appendChild(dupBtn);
 
@@ -2677,9 +3089,16 @@
               subCtrl.appendChild(nextBtn);
             }
             const subCoverBtn = document.createElement("button");
-            subCoverBtn.className = "mini-btn" + (section.featuredImg === src ? " selected" : "");
-            subCoverBtn.textContent = "portada";
-            subCoverBtn.addEventListener("click", (e) => { e.stopPropagation(); section.featuredImg = src; saveToStorage(); renderBlocks(); });
+            subCoverBtn.className = "mini-btn";
+            subCoverBtn.textContent = "+menú";
+            subCoverBtn.title = "Agregar al menú de categorías";
+            subCoverBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              section.featuredImages = section.featuredImages || [];
+              if (!section.featuredImages.includes(src)) section.featuredImages.push(src);
+              saveToStorage();
+              renderFeaturedArea();
+            });
             subCtrl.appendChild(subCoverBtn);
 
             const subDelBtn = document.createElement("button");
@@ -2759,10 +3178,14 @@
     }
 
     homeBtn.addEventListener("mouseenter", () => {
-      const preview = getSectionPreviewImage(portfolioData.home);
-      if (preview) setFeaturedImage(preview);
+      hoveredSectionId = "home";
+      renderFeaturedArea("home");
     });
-    homeBtn.addEventListener("click", () => { activeSectionId = "home"; updateView(); });
+    homeBtn.addEventListener("mouseleave", () => {
+      hoveredSectionId = null;
+      renderFeaturedArea(activeSectionId);
+    });
+    homeBtn.addEventListener("click", () => { activeSectionId = "home"; hoveredSectionId = null; updateView(); });
 
     toggleEditorBtn.addEventListener("click", () => {
       editorOpen = !editorOpen;
@@ -3060,12 +3483,18 @@
       const publicDataJson = JSON.stringify(portfolioData);
       const t = portfolioData.theme;
       const safeTitle = (portfolioData.siteTitle || "sitio web").replace(/</g, "&lt;");
+      const rbGrad = buildRainbowGradient(t.rainbowColors);
+      const cursorCss = buildCursorCSS(t);
+      const favHref = buildFaviconHref(t);
+      const favTag = favHref ? `<link rel="icon" href="${favHref}">` : "";
+
       const publicHtml = `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${safeTitle}</title>
+  ${favTag}
   <style>
     :root {
       --bg-color: ${t.bg};
@@ -3077,11 +3506,14 @@
       --cat-font-size: ${t.catFontSize}px;
       --block-gap: ${t.blockGap}px;
       --mob-block-gap: ${t.mobBlockGap}px;
+      --rainbow-grad: ${rbGrad};
+      --rainbow-text: ${t.rainbowText || "#111111"};
     }
+    ${cursorCss}
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--bg-color); color: var(--text-color); font-family: var(--font-main); font-size: 13px; line-height: 1.45; overflow-x: hidden; }
     .layout { display: flex; min-height: 100vh; width: 100%; }
-    .sidebar { background: var(--bg-color); z-index: 20; padding: 20px; overflow-y: auto; }
+    .sidebar { background: var(--bg-color); z-index: 20; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
     .layout.nav-hidden .sidebar { display: none !important; }
     .main { flex: 1; padding: 20px; position: relative; min-height: 100vh; min-width: 0; }
 
@@ -3092,40 +3524,48 @@
     .layout.nav-right .sidebar { width: var(--nav-size); position: sticky; top: 0; height: 100vh; border-left: 1px dashed var(--border-color); }
 
     .layout.nav-top { flex-direction: column; }
-    .layout.nav-top .sidebar { width: 100%; position: sticky; top: 0; height: auto; max-height: 45vh; border-bottom: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 20px; }
+    .layout.nav-top .sidebar { width: 100%; position: sticky; top: 0; height: auto; max-height: 55vh; border-bottom: 1px dashed var(--border-color); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 20px; }
     .layout.nav-top .site-title { margin-bottom: 0; }
-    .layout.nav-top .featured-box { width: 130px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-top .featured-area { width: auto; max-width: 260px; margin: 0 !important; flex-shrink: 0; }
     .layout.nav-top .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
 
     .layout.nav-bottom { flex-direction: column-reverse; padding-bottom: 90px; }
-    .layout.nav-bottom .sidebar { width: 100%; position: fixed; bottom: 0; left: 0; right: 0; height: auto; max-height: 36vh; border-top: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 20px; z-index: 45; }
+    .layout.nav-bottom .sidebar { width: 100%; position: fixed; bottom: 0; left: 0; right: 0; height: auto; max-height: 42vh; border-top: 1px dashed var(--border-color); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 20px; z-index: 45; }
     .layout.nav-bottom .site-title { margin-bottom: 0; }
-    .layout.nav-bottom .featured-box { width: 90px; margin-bottom: 0; flex-shrink: 0; }
+    .layout.nav-bottom .featured-area { width: auto; max-width: 180px; margin: 0 !important; flex-shrink: 0; }
     .layout.nav-bottom .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
 
     .layout.nav-floating { flex-direction: column; }
     .layout.nav-floating .sidebar { position: fixed; top: 20px; left: 20px; width: var(--nav-size); min-width: 200px; max-width: 90vw; max-height: 82vh; height: auto; border: 1px dashed var(--border-color); z-index: 45; }
 
     @keyframes flujoArcoiris { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-    .site-title { font-size: calc(var(--cat-font-size) + 2px); font-weight: normal; cursor: pointer; display: inline-block; margin-bottom: 14px; padding: 2px 6px; }
+    .site-title { font-size: calc(var(--cat-font-size) + 2px); font-weight: normal; cursor: pointer; display: inline-block; margin-bottom: 12px; padding: 2px 6px; order: 1; align-self: flex-start; }
+    .featured-area { width: 100%; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; order: 2; }
+    .featured-area.hidden-box { display: none !important; }
+    .featured-area.place-above-title { order: 0; margin-bottom: 12px; }
+    .featured-area.place-below-title { order: 2; margin-bottom: 14px; }
+    .featured-area.place-below-cats { order: 4; margin-top: 14px; margin-bottom: 10px; }
+    .featured-area.place-bottom { order: 6; margin-top: auto; padding-top: 12px; margin-bottom: 0; }
+    .featured-area.align-img-left { justify-content: flex-start; }
+    .featured-area.align-img-center { justify-content: center; }
+    .featured-area.align-img-right { justify-content: flex-end; }
+    .featured-img-card img { width: 100%; display: block; cursor: zoom-in; }
+
     .category-item { cursor: pointer; padding: 3px 6px; user-select: none; font-size: var(--cat-font-size); }
     .site-title:hover, .category-item:hover { color: var(--accent-color); }
 
-    .active-style-rainbow .category-item.active, .active-style-rainbow .site-title.active { color: #111111; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); background-size: 400% 100%; animation: flujoArcoiris 14s linear infinite; }
+    .active-style-rainbow .category-item.active, .active-style-rainbow .site-title.active { color: var(--rainbow-text); background: var(--rainbow-grad); background-size: 400% 100%; animation: flujoArcoiris 14s linear infinite; }
     .active-style-accent .category-item.active, .active-style-accent .site-title.active { background: var(--accent-color); color: var(--bg-color); }
     .active-style-underline .category-item.active, .active-style-underline .site-title.active { text-decoration: underline; text-decoration-style: wavy; color: var(--accent-color); font-weight: bold; }
     .active-style-box .category-item.active, .active-style-box .site-title.active { border: 1px dashed var(--accent-color); color: var(--accent-color); }
 
-    .featured-box { width: 100%; margin-bottom: 16px; }
-    .featured-box.hidden-box { display: none !important; }
-    .featured-box img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; border: 1px dashed var(--border-color); }
-    .category-list { list-style: none; }
+    .category-list { list-style: none; order: 3; }
     .category-list.cat-style-pills { display: flex; flex-wrap: wrap; gap: 6px; }
     .category-list.cat-style-pills .category-item { border: 1px dashed var(--border-color); padding: 3px 8px; }
     .category-list.cat-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
     .category-list.cat-style-grid .category-item { border: 1px dashed var(--border-color); padding: 4px 6px; }
 
-    .sidebar-custom-area { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cccccc; display: flex; flex-direction: column; gap: 8px; }
+    .sidebar-custom-area { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cccccc; display: flex; flex-direction: column; gap: 8px; order: 5; }
     .sidebar-custom-area:empty { display: none; }
 
     .custom-btn-el { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); text-decoration: none; font-family: inherit; font-size: 12px; cursor: pointer; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease; max-width: 100%; }
@@ -3133,7 +3573,7 @@
     .custom-btn-el img { display: block; max-width: 100%; height: auto; object-fit: contain; }
     .hover-fx-invert:hover { background: var(--text-color) !important; color: var(--bg-color) !important; border-color: var(--accent-color) !important; }
     .hover-fx-accent:hover { background: var(--accent-color) !important; color: var(--bg-color) !important; }
-    .hover-fx-rainbow:hover { color: #111111 !important; background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000) !important; background-size: 400% 100% !important; animation: flujoArcoiris 6s linear infinite !important; }
+    .hover-fx-rainbow:hover { color: var(--rainbow-text) !important; background: var(--rainbow-grad) !important; background-size: 400% 100% !important; animation: flujoArcoiris 6s linear infinite !important; }
     .hover-fx-celeste:hover { background: #00f0ff !important; color: #111111 !important; border-color: #111111 !important; }
     .hover-fx-lift:hover { transform: translate(-3px, -3px); }
     .hover-fx-tilt:hover { transform: rotate(-2.5deg) scale(1.03); }
@@ -3203,11 +3643,11 @@
         border-left: none !important;
         border-bottom: ${t.mobNavPos === "top" ? "1px dashed var(--border-color)" : "none"} !important;
         border-top: ${t.mobNavPos !== "top" ? "1px dashed var(--border-color)" : "none"} !important;
-        display: block !important;
+        display: flex !important;
         padding: ${t.mobPadding}px !important;
       }
       .layout.nav-hidden .sidebar { display: none !important; }
-      .featured-box { display: ${t.mobShowFeatured ? "block" : "none"} !important; }
+      .featured-area { display: ${t.mobShowFeatured ? "flex" : "none"} !important; }
       .category-list {
         display: flex !important;
         flex-direction: ${t.mobCatLayout === "stack" ? "column" : "row"} !important;
@@ -3239,7 +3679,7 @@
   <div class="layout nav-${t.navPosition} active-style-${t.catActiveStyle} ${t.hideSidebar ? "nav-hidden" : ""}">
     <aside class="sidebar">
       <div class="site-title active" id="homeBtn">${safeTitle}</div>
-      <div class="featured-box ${t.showFeatured ? "" : "hidden-box"}" id="featuredBox"><img id="featuredImg" src="" alt=""></div>
+      <div class="featured-area place-${t.featuredPlace || "below-title"} align-img-${t.featuredAlign || "left"} ${t.showFeatured ? "" : "hidden-box"}" id="featuredArea"></div>
       <ul class="category-list cat-style-${t.catListStyle}" id="categoryList"></ul>
       <div class="sidebar-custom-area" id="sidebarCustomArea"></div>
     </aside>
@@ -3263,8 +3703,7 @@
     const categoryListEl = document.getElementById("categoryList");
     const sidebarCustomAreaEl = document.getElementById("sidebarCustomArea");
     const blocksContainerEl = document.getElementById("blocksContainer");
-    const featuredBoxEl = document.getElementById("featuredBox");
-    const featuredImgEl = document.getElementById("featuredImg");
+    const featuredAreaEl = document.getElementById("featuredArea");
     const currentViewLabelEl = document.getElementById("currentViewLabel");
     const homeBtn = document.getElementById("homeBtn");
     const lightboxEl = document.getElementById("lightbox");
@@ -3305,22 +3744,52 @@
       if (Math.abs(diff) > 40) stepLb(diff > 0 ? 1 : -1);
     }, { passive: true });
 
-    function getSectionPreviewImage(sec) {
-      if (sec.featuredImg) return sec.featuredImg;
-      const imgB = sec.blocks.find(b => b.type === "image" && b.src);
-      if (imgB) return imgB.src;
-      const gridB = sec.blocks.find(b => b.type === "grid" && b.images && b.images.length);
-      if (gridB) return gridB.images[0];
-      const vidB = sec.blocks.find(b => b.type === "youtube" && b.videoId);
-      if (vidB) return "https://img.youtube.com/vi/" + vidB.videoId + "/hqdefault.jpg";
-      return DATA.home.featuredImg || "";
+    function getSectionPreviewImages(sec) {
+      const globals = (DATA.globalFeaturedImages || []).slice();
+      if (!sec) return globals;
+      let list = [];
+      if (Array.isArray(sec.featuredImages) && sec.featuredImages.length) list = sec.featuredImages.slice();
+      else {
+        const imgB = sec.blocks.find(b => b.type === "image" && b.src);
+        if (imgB) list = [imgB.src];
+        else {
+          const gridB = sec.blocks.find(b => b.type === "grid" && b.images && b.images.length);
+          if (gridB) list = [gridB.images[0]];
+          else {
+            const vidB = sec.blocks.find(b => b.type === "youtube" && b.videoId);
+            if (vidB) list = ["https://img.youtube.com/vi/" + vidB.videoId + "/hqdefault.jpg"];
+          }
+        }
+      }
+      return globals.concat(list);
     }
-    function setFeatured(src) {
-      if (!src) { featuredImgEl.removeAttribute("src"); featuredBoxEl.style.display = "none"; return; }
-      if (DATA.theme.showFeatured) featuredBoxEl.style.display = "";
-      featuredImgEl.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
-      featuredImgEl.src = src;
+
+    function renderFeatured(sec) {
+      const t = DATA.theme;
+      featuredAreaEl.innerHTML = "";
+      if (!t.showFeatured) return;
+      const imgs = getSectionPreviewImages(sec);
+      if (!imgs.length) return;
+      const sizePct = t.featuredSize || 100;
+      const ratio = t.featuredRatio || "auto";
+      const borderSt = t.featuredBorder || "dashed";
+
+      imgs.forEach((src, i) => {
+        const card = document.createElement("div");
+        card.style.width = sizePct >= 98 ? "100%" : "calc(" + sizePct + "% - 4px)";
+        const img = document.createElement("img");
+        img.src = src;
+        if (ratio === "circle") { img.style.aspectRatio = "1 / 1"; img.style.borderRadius = "50%"; img.style.objectFit = "cover"; }
+        else if (ratio !== "auto") { img.style.aspectRatio = ratio; img.style.objectFit = "cover"; }
+        else { img.style.height = "auto"; }
+        img.style.border = borderSt === "none" ? "none" : "1px " + borderSt + " var(--border-color)";
+        img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+        img.addEventListener("click", () => openLb(imgs, i, ""));
+        card.appendChild(img);
+        featuredAreaEl.appendChild(card);
+      });
     }
+
     function applyBorder(el, b) {
       const st = b.borderStyle !== undefined ? b.borderStyle : "dashed";
       el.style.border = st === "none" ? "none" : (b.borderWidth || 1) + "px " + st + " " + (b.borderColor || "#111111");
@@ -3380,12 +3849,14 @@
     document.addEventListener("click", () => document.querySelectorAll(".dropdown-widget.open").forEach(d => d.classList.remove("open")));
 
     function render() {
+      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
       categoryListEl.innerHTML = "";
       DATA.categories.forEach(cat => {
         const li = document.createElement("li");
         li.className = "category-item" + (activeSectionId === cat.id ? " active" : "");
         li.textContent = cat.name;
-        li.addEventListener("mouseenter", () => setFeatured(getSectionPreviewImage(cat)));
+        li.addEventListener("mouseenter", () => renderFeatured(cat));
+        li.addEventListener("mouseleave", () => renderFeatured(sec));
         li.addEventListener("click", () => { activeSectionId = cat.id; render(); });
         categoryListEl.appendChild(li);
       });
@@ -3393,10 +3864,9 @@
       (DATA.sidebarWidgets || []).forEach(w => sidebarCustomAreaEl.appendChild(buildWidget(w)));
 
       homeBtn.className = "site-title" + (activeSectionId === "home" ? " active" : "");
-      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
       if (!sec) return;
       currentViewLabelEl.textContent = sec.name;
-      setFeatured(getSectionPreviewImage(sec));
+      renderFeatured(sec);
       blocksContainerEl.innerHTML = "";
       sec.blocks.forEach(b => {
         const w = b.width || 100;
@@ -3455,7 +3925,11 @@
         blocksContainerEl.appendChild(bEl);
       });
     }
-    homeBtn.addEventListener("mouseenter", () => setFeatured(getSectionPreviewImage(DATA.home)));
+    homeBtn.addEventListener("mouseenter", () => renderFeatured(DATA.home));
+    homeBtn.addEventListener("mouseleave", () => {
+      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
+      renderFeatured(sec);
+    });
     homeBtn.addEventListener("click", () => { activeSectionId = "home"; render(); });
     document.getElementById("lightboxClose").addEventListener("click", () => lightboxEl.classList.remove("open"));
     lightboxEl.addEventListener("click", e => { if (e.target === lightboxEl) lightboxEl.classList.remove("open"); });

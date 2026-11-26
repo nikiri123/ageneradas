@@ -5259,8 +5259,9 @@ Opción 2 | https://..." style="margin:0;"></textarea>
       if (wasMobile) setDevicePreview("mobile");
     });
 
-    exportPublicHtmlBtn.addEventListener("click", () => {
-      const publicDataJson = JSON.stringify(portfolioData);
+   exportPublicHtmlBtn.addEventListener("click", () => {
+      // Escapa </script> dentro del JSON para que nunca rompa el HTML exportado
+      const publicDataJson = JSON.stringify(portfolioData).replace(/<\/script>/gi, "<\\/script>");
       const t = portfolioData.theme;
       const safeTitle = (portfolioData.siteTitle || "sitio web").replace(/</g, "&lt;");
       const rbGrad = buildRainbowGradient(t.rainbowColors);
@@ -5269,6 +5270,7 @@ Opción 2 | https://..." style="margin:0;"></textarea>
       const cursorCss = buildCursorCSS(t);
       const favHref = buildFaviconHref(t);
       const favTag = favHref ? `<link rel="icon" href="${favHref}">` : "";
+      const closeScript = "<" + "/script>";
 
       const publicHtml = `<!DOCTYPE html>
 <html lang="es">
@@ -5396,12 +5398,12 @@ Opción 2 | https://..." style="margin:0;"></textarea>
 
     .dropdown-widget { position: relative; display: inline-block; max-width: 100%; }
     .dropdown-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); font-family: inherit; font-size: 12px; cursor: pointer; width: 100%; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease; }
-    .dropdown-trigger.is-photo-btn { padding: 2px; }
+    .dropdown-trigger.is-photo-btn { padding: 2px; background: transparent; }
     .dropdown-trigger img { display: block; max-width: 100%; height: auto; }
     .dropdown-menu-panel { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: var(--bg-color); border: 1px dashed var(--border-color); z-index: 60; flex-direction: column; margin-top: 2px; }
     .dropdown-widget.open .dropdown-menu-panel, .dropdown-widget.trigger-hover:hover .dropdown-menu-panel { display: flex; }
     .sidebar .dropdown-menu-panel { position: static; width: 100%; margin-top: 4px; }
-    .dropdown-sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; text-decoration: none; color: var(--text-color); font-size: 12px; border-bottom: 1px dashed #cccccc; cursor: pointer; background: var(--bg-color); }
+    .dropdown-sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; text-decoration: none; color: var(--text-color); font-size: 12px; border-bottom: 1px dashed #cccccc; cursor: pointer; background: var(--bg-color); border-left: none; border-right: none; border-top: none; font-family: inherit; text-align: left; }
     .dropdown-sub-item:last-child { border-bottom: none; }
     .dropdown-sub-item img { width: 22px; height: 22px; object-fit: cover; border: 1px dashed var(--border-color); }
 
@@ -5533,7 +5535,7 @@ Opción 2 | https://..." style="margin:0;"></textarea>
     const lightboxNextEl = document.getElementById("lightboxNext");
 
     function getFallbackDriveUrl(url) {
-      const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      const m = url.match(/\\/d\\/([a-zA-Z0-9_-]+)/);
       return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600" : url;
     }
     function openLb(imgs, idx, cap) {
@@ -5711,9 +5713,18 @@ Opción 2 | https://..." style="margin:0;"></textarea>
         });
         const panel = document.createElement("div"); panel.className = "dropdown-menu-panel";
         (item.items || []).forEach(sub => {
-          const a = document.createElement("a");
+          const isSec = sub.actionType === "section";
+          const a = document.createElement(isSec ? "button" : "a");
           a.className = "dropdown-sub-item" + hCls;
-          a.href = sub.target || "#"; a.target = "_blank"; a.rel = "noopener";
+          if (isSec) {
+            a.type = "button";
+            a.addEventListener("click", () => {
+              wrap.classList.remove("open");
+              if (sub.target) { activeSectionId = sub.target; render(); }
+            });
+          } else {
+            a.href = sub.target || "#"; a.target = "_blank"; a.rel = "noopener";
+          }
           if (sub.imgSrc) { const im = document.createElement("img"); im.src = sub.imgSrc; a.appendChild(im); }
           const tx = document.createElement("span"); tx.textContent = sub.label || "opción"; a.appendChild(tx);
           panel.appendChild(a);
@@ -5901,7 +5912,7 @@ Opción 2 | https://..." style="margin:0;"></textarea>
       if (e.key === "ArrowRight") stepLb(1);
     });
     render();
-  <\/script>
+  ${closeScript}
 </body>
 </html>`;
 
@@ -5911,17 +5922,3 @@ Opción 2 | https://..." style="margin:0;"></textarea>
       a.download = "index.html";
       a.click();
     });
-
-    lightboxCloseEl.addEventListener("click", () => lightboxEl.classList.remove("open"));
-    lightboxEl.addEventListener("click", (e) => { if (e.target === lightboxEl) lightboxEl.classList.remove("open"); });
-    document.addEventListener("keydown", (e) => {
-      if (!lightboxEl.classList.contains("open")) return;
-      if (e.key === "Escape") lightboxEl.classList.remove("open");
-      if (e.key === "ArrowLeft") stepLightbox(-1);
-      if (e.key === "ArrowRight") stepLightbox(1);
-    });
-
-    updateView();
-  </script>
-</body>
-</html>

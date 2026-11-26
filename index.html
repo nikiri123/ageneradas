@@ -124,12 +124,12 @@
 
     .dropdown-widget { position: relative; display: inline-block; max-width: 100%; }
     .dropdown-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); font-family: inherit; font-size: 12px; cursor: pointer; width: 100%; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease; }
-    .dropdown-trigger.is-photo-btn { padding: 2px; }
+    .dropdown-trigger.is-photo-btn { padding: 2px; background: transparent; }
     .dropdown-trigger img { display: block; max-width: 100%; height: auto; }
     .dropdown-menu-panel { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: var(--bg-color); border: 1px dashed var(--border-color); z-index: 60; flex-direction: column; margin-top: 2px; }
     .dropdown-widget.open .dropdown-menu-panel, .dropdown-widget.trigger-hover:hover .dropdown-menu-panel { display: flex; }
     .sidebar .dropdown-menu-panel { position: static; width: 100%; margin-top: 4px; }
-    .dropdown-sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; text-decoration: none; color: var(--text-color); font-size: 12px; border-bottom: 1px dashed #cccccc; cursor: pointer; background: var(--bg-color); }
+    .dropdown-sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; text-decoration: none; color: var(--text-color); font-size: 12px; border-bottom: 1px dashed #cccccc; cursor: pointer; background: var(--bg-color); border-left: none; border-right: none; border-top: none; font-family: inherit; text-align: left; }
     .dropdown-sub-item:last-child { border-bottom: none; }
     .dropdown-sub-item img { width: 22px; height: 22px; object-fit: cover; border: 1px dashed var(--border-color); }
 
@@ -235,13 +235,13 @@
   <div class="lightbox" id="lightbox">
     <span class="lightbox-counter" id="lightboxCounter"></span>
     <button class="lightbox-close" id="lightboxClose">cerrar [esc]</button>
-    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">←</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">â†</button>
     <img id="lightboxImg" src="" alt="">
-    <button class="lightbox-nav lightbox-next" id="lightboxNext">→</button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext">â†’</button>
     <div class="lightbox-caption" id="lightboxCaption"></div>
   </div>
   <script>
-    const DATA = {"siteTitle":"AGENERADAS","theme":{"bg":"#c2c2c2","text":"#111111","accent":"#0400ff","border":"#ffffff","bgMode":"color","bgImageUrl":"","bgTileSize":0,"sidebarTransparent":false,"font":"'Times New Roman', Times, serif","blockGap":0,"hideSidebar":false,"navPosition":"top","navSize":28,"catFontSize":13,"catListStyle":"pills","catActiveStyle":"accent","showFeatured":false,"featuredPlace":"below-title","featuredAlign":"left","featuredSize":100,"featuredRatio":"auto","featuredBorder":"none","rainbowColors":["#ff0000","#ff7f00","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"],"rainbowText":"#111111","cursorMode":"default","cursorUrl":"","faviconMode":"custom","faviconUrl":"https://lh3.googleusercontent.com/d/12Qe-3T2dSIlEfHcnkj0Kp79W7yHX8Qqx","mobNavPos":"fixed-bottom","mobCatLayout":"wrap","mobCatSize":9,"mobShowFeatured":false,"mobStickersFree":false,"mobBlockGap":0,"mobPadding":12},"globalFeaturedImages":[],"sidebarWidgets":[],"home":{"name":"inicio","featuredImg":"","featuredImages":["https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY"],"blocks":[{"id":"b-wuzkw6i","type":"columns","width":100,"mobileWidth":100,"align":"flow","template":"1fr 1fr 1fr","gap":0,"columns":[{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[{"id":"b-mk9250z","type":"image","src":"https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY","caption":"","borderStyle":"dashed","borderWidth":1,"borderColor":"#ffffff"},{"id":"b-i0tqo85","type":"button","btnKind":"text","label":"ver más","actionType":"url","target":"https://","hoverEffect":"invert","useCustomBg":true,"bgColor":"#d9d9d9","textColor":"#111111","shadowStyle":"bevel","shadowColor":"#363030","borderStyle":"dashed","borderWidth":1,"borderColor":"#111111"}]},{"bgColor":"#b0b0b0","useBg":true,"borderStyle":"dashed","borderColor":"#111111","blocks":[{"id":"b-zn3cpfm","type":"text","borderStyle":"none","borderWidth":1,"borderColor":"#111111","html":"<h2 style=\"text-align: center;\"><i><u><br></u></i></h2><h2 style=\"text-align: center;\"><i><u>a.g.e.n.e.r.a.d.a.s.</u> </i><span style=\"font-weight: normal;\">es un colectivo de arte cross con una preocupación particular por el límite entre el arte y la moda. La pieza de indumentaria como objeto trifásico, de exposición, de uso, y de performance, rompe los esquemas de la definición que operan sobre las tecnologías de género. De modo que permiten el tránsito hacia expresiones y experiencias diversas y dispares, confirmando así la posibilidad de un arte vivo, fluido y mutable.&nbsp;</span></h2><div><span style=\"font-weight: normal;\"><br></span></div>"},{"id":"b-stzwjlc","type":"buttonList","listDir":"vertical","bullet":"• ","hoverEffect":"invert","useCustomBg":false,"bgColor":"#c7c7c7","textColor":"#0d0d0d","shadowStyle":"bevel","shadowColor":"#111111","borderStyle":"solid","borderWidth":1,"borderColor":"#111111","items":[{"label":"2026 -  “Motivos?” Stand en Plateada Feria.","subtext":"","target":"cat-1795703514297","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 -  “Motivos?” Stand en Plateada Feria.</span>"},{"label":"2026 - “ El límite entre el Arte y la Moda, show de Talentos”","subtext":"el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el límite entre el arte y la moda” un fuego todo el show 🔥 se reinventaron las reglas del juego ..","target":"cat-1795703561639","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 - “ El límite entre el Arte y la Moda, show de Talentos”</span>","subHtml":"<font color=\"#464649\">el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el límite entre el arte y la moda” un fuego todo el show 🔥 se reinventaron las reglas del juego .</font><font color=\"#ababb0\">.</font>"},{"label":"2025 - “ Asado de Fashion - Feria 420 todo el Show” Las Deudas.","subtext":"a más de una se le va a salir el culo a fuera como la gallina","target":"cat-1795703573596","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - “ Asado de Fashion - Feria 420 todo el Show” Las Deudas.</span>"},{"label":"2025 - “ Perfectos Dragones - Desfile Agenero ” La Lengua.","subtext":"","target":"cat-1795703585495","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - “ Perfectos Dragones - Desfile Agenero ” La Lengua.</span>"}]}]},{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[]}],"borderStyle":"dashed","borderWidth":1,"borderColor":"#111111","hideMobile":false}]},"categories":[{"id":"cat-1795701242518","name":"eventos","featuredImg":"","featuredImages":[],"blocks":[],"parentId":null,"hiddenInNav":false},{"id":"cat-1795703514297","parentId":"cat-1795701242518","hiddenInNav":false,"name":"motivos?","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703561639","parentId":"cat-1795701242518","hiddenInNav":false,"name":"El límite entre el Arte y la Moda","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703573596","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Asado de Fashion","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703585495","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Perfectos Dragones","featuredImg":"","featuredImages":[],"blocks":[]}]};
+    const DATA = {"siteTitle":"AGENERADAS","theme":{"bg":"#c2c2c2","text":"#111111","accent":"#0400ff","border":"#ffffff","bgMode":"color","bgImageUrl":"","bgTileSize":0,"sidebarTransparent":false,"font":"'Times New Roman', Times, serif","blockGap":0,"hideSidebar":false,"navPosition":"top","navSize":28,"catFontSize":13,"catListStyle":"pills","catActiveStyle":"accent","showFeatured":false,"featuredPlace":"below-title","featuredAlign":"left","featuredSize":100,"featuredRatio":"auto","featuredBorder":"none","rainbowColors":["#ff0000","#ff7f00","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"],"rainbowText":"#111111","cursorMode":"default","cursorUrl":"","faviconMode":"custom","faviconUrl":"https://lh3.googleusercontent.com/d/12Qe-3T2dSIlEfHcnkj0Kp79W7yHX8Qqx","mobNavPos":"fixed-bottom","mobCatLayout":"wrap","mobCatSize":9,"mobShowFeatured":false,"mobStickersFree":false,"mobBlockGap":0,"mobPadding":12},"globalFeaturedImages":[],"sidebarWidgets":[],"home":{"name":"inicio","featuredImg":"","featuredImages":["https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY"],"blocks":[{"id":"b-wuzkw6i","type":"columns","width":100,"mobileWidth":100,"align":"flow","template":"1fr 1fr 1fr","gap":0,"columns":[{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[{"id":"b-mk9250z","type":"image","src":"https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY","caption":"","borderStyle":"dashed","borderWidth":1,"borderColor":"#ffffff"},{"id":"b-i0tqo85","type":"button","btnKind":"text","label":"ver mÃ¡s","actionType":"url","target":"https://","hoverEffect":"invert","useCustomBg":true,"bgColor":"#d9d9d9","textColor":"#111111","shadowStyle":"bevel","shadowColor":"#363030","borderStyle":"dashed","borderWidth":1,"borderColor":"#111111"}]},{"bgColor":"#b0b0b0","useBg":true,"borderStyle":"dashed","borderColor":"#111111","blocks":[{"id":"b-zn3cpfm","type":"text","borderStyle":"none","borderWidth":1,"borderColor":"#111111","html":"<h2 style=\"text-align: center;\"><i><u><br></u></i></h2><h2 style=\"text-align: center;\"><i><u>a.g.e.n.e.r.a.d.a.s.</u> </i><span style=\"font-weight: normal;\">es un colectivo de arte cross con una preocupaciÃ³n particular por el lÃ­mite entre el arte y la moda. La pieza de indumentaria como objeto trifÃ¡sico, de exposiciÃ³n, de uso, y de performance, rompe los esquemas de la definiciÃ³n que operan sobre las tecnologÃ­as de gÃ©nero. De modo que permiten el trÃ¡nsito hacia expresiones y experiencias diversas y dispares, confirmando asÃ­ la posibilidad de un arte vivo, fluido y mutable.&nbsp;</span></h2><div><span style=\"font-weight: normal;\"><br></span></div>"},{"id":"b-stzwjlc","type":"buttonList","listDir":"vertical","bullet":"â€¢ ","hoverEffect":"invert","useCustomBg":false,"bgColor":"#c7c7c7","textColor":"#0d0d0d","shadowStyle":"bevel","shadowColor":"#111111","borderStyle":"solid","borderWidth":1,"borderColor":"#111111","items":[{"label":"2026 -  â€œMotivos?â€ Stand en Plateada Feria.","subtext":"","target":"cat-1795703514297","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 -  â€œMotivos?â€ Stand en Plateada Feria.</span>"},{"label":"2026 - â€œ El lÃ­mite entre el Arte y la Moda, show de Talentosâ€","subtext":"el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el lÃ­mite entre el arte y la modaâ€ un fuego todo el show ðŸ”¥ se reinventaron las reglas del juego ..","target":"cat-1795703561639","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 - â€œ El lÃ­mite entre el Arte y la Moda, show de Talentosâ€</span>","subHtml":"<font color=\"#464649\">el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el lÃ­mite entre el arte y la modaâ€ un fuego todo el show ðŸ”¥ se reinventaron las reglas del juego .</font><font color=\"#ababb0\">.</font>"},{"label":"2025 - â€œ Asado de Fashion - Feria 420 todo el Showâ€ Las Deudas.","subtext":"a mÃ¡s de una se le va a salir el culo a fuera como la gallina","target":"cat-1795703573596","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - â€œ Asado de Fashion - Feria 420 todo el Showâ€ Las Deudas.</span>"},{"label":"2025 - â€œ Perfectos Dragones - Desfile Agenero â€ La Lengua.","subtext":"","target":"cat-1795703585495","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - â€œ Perfectos Dragones - Desfile Agenero â€ La Lengua.</span>"}]}]},{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[]}],"borderStyle":"dashed","borderWidth":1,"borderColor":"#111111","hideMobile":false},{"id":"b-ecqrw8m","type":"dropdown","btnKind":"photo","label":"hkhkhmkhmhkljln","imgSrc":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","triggerMode":"click","hoverEffect":"invert","items":[{"label":"OpciÃ³n 1","target":"#","actionType":"url"}],"width":25,"mobileWidth":100,"align":"flow","borderStyle":"none","borderWidth":1,"borderColor":"#ffffff"},{"id":"b-m4l4vjc","type":"dropdown","btnKind":"photo","label":"menÃº","imgSrc":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","triggerMode":"click","hoverEffect":"invert","items":[{"label":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpghttps://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","target":"#","actionType":"url","imgSrc":""}],"width":25,"mobileWidth":100,"align":"flow","borderStyle":"none","borderWidth":1,"borderColor":"#ffffff"}]},"categories":[{"id":"cat-1795701242518","name":"eventos","featuredImg":"","featuredImages":[],"blocks":[],"parentId":null,"hiddenInNav":false},{"id":"cat-1795703514297","parentId":"cat-1795701242518","hiddenInNav":false,"name":"motivos?","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703561639","parentId":"cat-1795701242518","hiddenInNav":false,"name":"El lÃ­mite entre el Arte y la Moda","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703573596","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Asado de Fashion","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703585495","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Perfectos Dragones","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795704033320","parentId":null,"hiddenInNav":false,"name":"campaÃ±as de moda","featuredImg":"","featuredImages":[],"blocks":[]}]};
     let activeSectionId = "home";
     let expandedCatIds = {};
     let lbGallery = [], lbIndex = 0, touchStartX = 0;
@@ -259,7 +259,7 @@
     const lightboxNextEl = document.getElementById("lightboxNext");
 
     function getFallbackDriveUrl(url) {
-      const m = url.match(//d/([a-zA-Z0-9_-]+)/);
+      const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
       return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600" : url;
     }
     function openLb(imgs, idx, cap) {
@@ -369,7 +369,7 @@
           const img = document.createElement("img"); img.src = item.imgSrc;
           img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(item.imgSrc); };
           el.appendChild(img);
-        } else { el.textContent = item.label || "botón"; }
+        } else { el.textContent = item.label || "botÃ³n"; }
         return el;
       }
       if (item.type === "buttonList") {
@@ -398,7 +398,7 @@
             const bs = document.createElement("span"); bs.className = "btn-list-bullet-span"; bs.textContent = itemBul; m.appendChild(bs);
           }
           const lr = document.createElement("span"); lr.className = "btn-list-label-rich";
-          if (sub.html) lr.innerHTML = sub.html; else lr.textContent = sub.label || "ítem";
+          if (sub.html) lr.innerHTML = sub.html; else lr.textContent = sub.label || "Ã­tem";
           m.appendChild(lr);
           el.appendChild(m);
           if ((sub.subtext && sub.subtext.trim() !== "") || (sub.subHtml && sub.subHtml.trim() !== "")) {
@@ -425,8 +425,8 @@
           img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(item.imgSrc); };
           trig.appendChild(img);
         } else {
-          const s1 = document.createElement("span"); s1.textContent = item.label || "menú";
-          const s2 = document.createElement("span"); s2.textContent = "▾";
+          const s1 = document.createElement("span"); s1.textContent = item.label || "menÃº";
+          const s2 = document.createElement("span"); s2.textContent = "â–¾";
           trig.appendChild(s1); trig.appendChild(s2);
         }
         trig.addEventListener("click", e => {
@@ -437,11 +437,20 @@
         });
         const panel = document.createElement("div"); panel.className = "dropdown-menu-panel";
         (item.items || []).forEach(sub => {
-          const a = document.createElement("a");
+          const isSec = sub.actionType === "section";
+          const a = document.createElement(isSec ? "button" : "a");
           a.className = "dropdown-sub-item" + hCls;
-          a.href = sub.target || "#"; a.target = "_blank"; a.rel = "noopener";
+          if (isSec) {
+            a.type = "button";
+            a.addEventListener("click", () => {
+              wrap.classList.remove("open");
+              if (sub.target) { activeSectionId = sub.target; render(); }
+            });
+          } else {
+            a.href = sub.target || "#"; a.target = "_blank"; a.rel = "noopener";
+          }
           if (sub.imgSrc) { const im = document.createElement("img"); im.src = sub.imgSrc; a.appendChild(im); }
-          const tx = document.createElement("span"); tx.textContent = sub.label || "opción"; a.appendChild(tx);
+          const tx = document.createElement("span"); tx.textContent = sub.label || "opciÃ³n"; a.appendChild(tx);
           panel.appendChild(a);
         });
         wrap.appendChild(trig); wrap.appendChild(panel);
@@ -473,7 +482,7 @@
         if (subs.length) {
           const caret = document.createElement("span");
           caret.className = "cat-sub-caret";
-          caret.textContent = "▾";
+          caret.textContent = "â–¾";
           caret.addEventListener("click", e => {
             e.stopPropagation();
             expandedCatIds[cat.id] = !expandedCatIds[cat.id];
@@ -498,7 +507,647 @@
             const subLi = document.createElement("li");
             const subRow = document.createElement("div");
             subRow.className = "category-item subcategory-item" + (activeSectionId === sub.id ? " active" : "");
-            subRow.textContent = "↳ " + sub.name;
+            subRow.textContent = "â†³ " + sub.name;
+            subRow.addEventListener("mouseenter", () => renderFeatured(sub));
+            subRow.addEventListener("mouseleave", () => renderFeatured(sec));
+            subRow.addEventListener("click", e => {
+              e.stopPropagation();
+              activeSectionId = sub.id;
+              render();
+            });
+            subLi.appendChild(subRow);
+            subUl.appendChild(subLi);
+          });
+          li.appendChild(subUl);
+        }
+        categoryListEl.appendChild(li);
+      });
+      sidebarCustomAreaEl.innerHTML = "";
+      (DATA.sidebarWidgets || []).forEach(w => sidebarCustomAreaEl.appendChild(buildWidget(w)));
+
+      homeBtn.className = "site-title" + (activeSectionId === "home" ? " active" : "");
+      if (!sec) return;
+      if (sec.parentId) {
+        const par = DATA.categories.find(c => c.id === sec.parentId);
+        currentViewLabelEl.textContent = (par ? par.name + " / " : "") + sec.name;
+      } else {
+        currentViewLabelEl.textContent = sec.name;
+      }
+      renderFeatured(sec);
+      blocksContainerEl.innerHTML = "";
+      sec.blocks.forEach(b => {
+        const w = b.width || 100;
+        const mw = b.mobileWidth !== undefined ? b.mobileWidth : 100;
+        const align = b.align || "flow";
+        const bEl = document.createElement("div");
+        bEl.className = "block-item align-" + align + (b.hideMobile ? " mobile-hidden" : "");
+        bEl.style.setProperty("--mob-w", mw + "%");
+        bEl.style.setProperty("--mob-flow-w", mw >= 98 ? "100%" : "calc(" + mw + "% - " + Math.round((DATA.theme.mobBlockGap || 10)/2) + "px)");
+        bEl.style.setProperty("--mob-x", (b.mobX !== undefined ? b.mobX : (b.x || 20)) + "px");
+        bEl.style.setProperty("--mob-y", (b.mobY !== undefined ? b.mobY : (b.y || 20)) + "px");
+
+        const bIn = document.createElement("div");
+        bIn.className = "block-inner";
+        if (align === "sticker") {
+          bEl.style.width = w + "%"; bEl.style.left = (b.x || 40) + "px"; bEl.style.top = (b.y || 40) + "px";
+        } else if (align === "flow") {
+          bEl.style.width = w >= 98 ? "100%" : "calc(" + w + "% - " + Math.round((DATA.theme.blockGap || 14)/2) + "px)";
+        } else {
+          bIn.style.width = w + "%";
+        }
+        if (b.type === "button" || b.type === "buttonList" || b.type === "dropdown") {
+          bIn.appendChild(buildWidget(b));
+        } else if (b.type === "columns") {
+          const cw = document.createElement("div");
+          cw.className = "columns-block-wrapper";
+          cw.style.gridTemplateColumns = b.template || "1fr 1fr";
+          cw.style.gap = (b.gap !== undefined ? b.gap : 14) + "px";
+          (b.columns || []).forEach(col => {
+            const cs = document.createElement("div");
+            cs.className = "column-slot";
+            if (col.useBg && col.bgColor) cs.style.background = col.bgColor;
+            if (col.borderStyle && col.borderStyle !== "none") {
+              cs.style.border = "1px " + col.borderStyle + " " + (col.borderColor || "#111111");
+              cs.style.padding = "10px";
+            }
+            (col.blocks || []).forEach(ch => {
+              if (ch.type === "text") {
+                const d = document.createElement("div"); d.className = "text-block-content"; d.style.padding = "6px"; d.innerHTML = ch.html || ""; cs.appendChild(d);
+              } else if (ch.type === "image") {
+                const fig = document.createElement("div"); fig.className = "image-block-figure";
+                const img = document.createElement("img"); img.src = ch.src; img.loading = "lazy"; applyBorder(img, ch);
+                img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(ch.src); };
+                img.addEventListener("click", () => openLb([ch.src], 0, ch.caption || ""));
+                fig.appendChild(img); cs.appendChild(fig);
+              } else if (ch.type === "button" || ch.type === "buttonList" || ch.type === "dropdown") {
+                cs.appendChild(buildWidget(ch));
+              }
+            });
+            cw.appendChild(cs);
+          });
+          bIn.appendChild(cw);
+        } else if (b.type === "text") {
+          const d = document.createElement("div"); d.className = "text-block-content"; d.innerHTML = b.html || ""; applyBorder(d, b); bIn.appendChild(d);
+        } else if (b.type === "spacer") {
+          const sp = document.createElement("div"); sp.className = "spacer-block-inner"; sp.style.height = (b.height || 30) + "px";
+          const ln = document.createElement("div"); ln.className = "spacer-line";
+          const st = b.borderStyle !== undefined ? b.borderStyle : "dashed";
+          ln.style.borderTop = st === "none" ? "none" : (b.borderWidth || 1) + "px " + st + " " + (b.borderColor || "#111111");
+          sp.appendChild(ln); bIn.appendChild(sp);
+        } else if (b.type === "image") {
+          const fig = document.createElement("div"); fig.className = "image-block-figure";
+          const img = document.createElement("img"); img.src = b.src; img.loading = "lazy"; applyBorder(img, b);
+          img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(b.src); };
+          img.addEventListener("click", () => openLb([b.src], 0, b.caption || ""));
+          fig.appendChild(img);
+          if (b.caption) { const c = document.createElement("div"); c.className = "image-caption"; c.textContent = b.caption; fig.appendChild(c); }
+          bIn.appendChild(fig);
+        } else if (b.type === "youtube") {
+          const vw = document.createElement("div"); vw.className = "video-block-wrapper"; vw.style.aspectRatio = b.aspectRatio || "16 / 9"; applyBorder(vw, b);
+          const ifr = document.createElement("iframe"); ifr.src = "https://www.youtube.com/embed/" + b.videoId; ifr.allowFullscreen = true;
+          vw.appendChild(ifr); bIn.appendChild(vw);
+        } else if (b.type === "grid") {
+          const gc = document.createElement("div"); gc.className = "grid-block-masonry"; gc.style.columnCount = b.cols || 3; gc.style.setProperty("--mob-cols", b.mobileCols || 2);
+          (b.images || []).forEach((src, i) => {
+            const sub = document.createElement("div"); sub.className = "grid-sub-item";
+            const img = document.createElement("img"); img.src = src; img.loading = "lazy"; applyBorder(img, b);
+            img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+            img.addEventListener("click", () => openLb(b.images, i, ""));
+            sub.appendChild(img); gc.appendChild(sub);
+          });
+          bIn.appendChild(gc);
+        }
+        bEl.appendChild(bIn);
+        blocksContainerEl.appendChild(bEl);
+      });
+    }
+    homeBtn.addEventListener("mouseenter", () => renderFeatured(DATA.home));
+    homeBtn.addEventListener("mouseleave", () => {
+      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
+      renderFeatured(sec);
+    });
+    homeBtn.addEventListener("click", () => { activeSectionId = "home"; render(); });
+    document.getElementById("lightboxClose").addEventListener("click", () => lightboxEl.classList.remove("open"));
+    lightboxEl.addEventListener("click", e => { if (e.target === lightboxEl) lightboxEl.classList.remove("open"); });
+    document.addEventListener("keydown", e => {
+      if (!lightboxEl.classList.contains("open")) return;
+      if (e.key === "Escape") lightboxEl.classList.remove("open");
+      if (e.key === "ArrowLeft") stepLb(-1);
+      if (e.key === "ArrowRight") stepLb(1);
+    });
+    render();
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGENERADAS</title>
+  <link rel="icon" href="https://lh3.googleusercontent.com/d/12Qe-3T2dSIlEfHcnkj0Kp79W7yHX8Qqx">
+  <style>
+    :root {
+      --bg-color: #c2c2c2;
+      --bg-image: none;
+      --bg-repeat: repeat;
+      --bg-size: auto;
+      --bg-attachment: scroll;
+      --sidebar-bg: #c2c2c2;
+      --text-color: #111111;
+      --accent-color: #0400ff;
+      --border-color: #ffffff;
+      --font-main: 'Times New Roman', Times, serif;
+      --nav-size: 28%;
+      --cat-font-size: 13px;
+      --block-gap: 0px;
+      --mob-block-gap: 0px;
+      --rainbow-grad: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+      --rainbow-text: #111111;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background-color: var(--bg-color); background-image: var(--bg-image); background-repeat: var(--bg-repeat); background-size: var(--bg-size); background-attachment: var(--bg-attachment); color: var(--text-color); font-family: var(--font-main); font-size: 13px; line-height: 1.45; overflow-x: hidden; }
+    .layout { display: flex; min-height: 100vh; width: 100%; }
+    .sidebar { background: var(--sidebar-bg); z-index: 20; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+    .layout.nav-hidden .sidebar { display: none !important; }
+    .main { flex: 1; padding: 20px; position: relative; min-height: 100vh; min-width: 0; }
+
+    .layout.nav-left { flex-direction: row; align-items: flex-start; }
+    .layout.nav-left .sidebar { width: var(--nav-size); position: sticky; top: 0; height: 100vh; border-right: 1px dashed var(--border-color); }
+
+    .layout.nav-right { flex-direction: row-reverse; align-items: flex-start; }
+    .layout.nav-right .sidebar { width: var(--nav-size); position: sticky; top: 0; height: 100vh; border-left: 1px dashed var(--border-color); }
+
+    .layout.nav-top { flex-direction: column; }
+    .layout.nav-top .sidebar { width: 100%; position: sticky; top: 0; height: auto; max-height: 55vh; border-bottom: 1px dashed var(--border-color); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 16px; padding: 14px 20px; overflow: visible; }
+    .layout.nav-top .site-title { margin-bottom: 0; }
+    .layout.nav-top .featured-area { width: auto; max-width: 260px; margin: 0 !important; flex-shrink: 0; }
+    .layout.nav-top .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+
+    .layout.nav-bottom { flex-direction: column-reverse; padding-bottom: 90px; }
+    .layout.nav-bottom .sidebar { width: 100%; position: fixed; bottom: 0; left: 0; right: 0; height: auto; max-height: 42vh; border-top: 1px dashed var(--border-color); flex-direction: row; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 20px; z-index: 45; overflow: visible; }
+    .layout.nav-bottom .site-title { margin-bottom: 0; }
+    .layout.nav-bottom .featured-area { width: auto; max-width: 180px; margin: 0 !important; flex-shrink: 0; }
+    .layout.nav-bottom .category-list { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; flex: 1; }
+
+    .layout.nav-floating { flex-direction: column; }
+    .layout.nav-floating .sidebar { position: fixed; top: 20px; left: 20px; width: var(--nav-size); min-width: 200px; max-width: 90vw; max-height: 82vh; height: auto; border: 1px dashed var(--border-color); z-index: 45; }
+
+    @keyframes flujoArcoiris { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .site-title { font-size: calc(var(--cat-font-size) + 2px); font-weight: normal; cursor: pointer; display: inline-block; margin-bottom: 12px; padding: 2px 6px; order: 1; align-self: flex-start; }
+    .featured-area { width: 100%; margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px; order: 2; }
+    .featured-area.hidden-box { display: none !important; }
+    .featured-area.place-above-title { order: 0; margin-bottom: 12px; }
+    .featured-area.place-below-title { order: 2; margin-bottom: 14px; }
+    .featured-area.place-below-cats { order: 4; margin-top: 14px; margin-bottom: 10px; }
+    .featured-area.place-bottom { order: 6; margin-top: auto; padding-top: 12px; margin-bottom: 0; }
+    .featured-area.align-img-left { justify-content: flex-start; }
+    .featured-area.align-img-center { justify-content: center; }
+    .featured-area.align-img-right { justify-content: flex-end; }
+    .featured-img-card img { width: 100%; display: block; cursor: zoom-in; }
+
+    .cat-group-li { position: relative; display: flex; flex-direction: column; }
+    .category-item { cursor: pointer; padding: 3px 6px; user-select: none; font-size: var(--cat-font-size); display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .site-title:hover, .category-item:hover { color: var(--accent-color); }
+    .cat-main-label { display: inline-flex; align-items: center; gap: 4px; }
+    .cat-sub-caret { font-size: 10px; opacity: 0.75; padding: 0 3px; transition: transform 0.15s ease; }
+    .cat-group-li.sub-open .cat-sub-caret { transform: rotate(180deg); }
+
+    .subcategory-list { list-style: none; display: none; flex-direction: column; gap: 3px; margin-top: 3px; padding-left: 12px; border-left: 1px dashed var(--border-color); }
+    .cat-group-li.sub-open > .subcategory-list, .cat-group-li.has-subs:hover > .subcategory-list { display: flex; }
+    .layout.nav-top .subcategory-list, .layout.nav-bottom .subcategory-list { position: absolute; top: 100%; left: 0; min-width: 190px; background: var(--bg-color); border: 1px dashed var(--border-color); padding: 4px; margin-top: 2px; z-index: 80; box-shadow: 3px 3px 0px rgba(0,0,0,0.12); }
+    .layout.nav-bottom .subcategory-list { top: auto; bottom: 100%; margin-top: 0; margin-bottom: 2px; }
+    .subcategory-item { font-size: calc(var(--cat-font-size) - 1px); padding: 2px 6px; }
+
+    .active-style-rainbow .category-item.active, .active-style-rainbow .site-title.active { color: var(--rainbow-text); background: var(--rainbow-grad); background-size: 400% 100%; animation: flujoArcoiris 14s linear infinite; }
+    .active-style-accent .category-item.active, .active-style-accent .site-title.active { background: var(--accent-color); color: var(--bg-color); }
+    .active-style-underline .category-item.active, .active-style-underline .site-title.active { text-decoration: underline; text-decoration-style: wavy; color: var(--accent-color); font-weight: bold; }
+    .active-style-box .category-item.active, .active-style-box .site-title.active { border: 1px dashed var(--accent-color); color: var(--accent-color); }
+
+    .category-list { list-style: none; order: 3; }
+    .category-list.cat-style-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .category-list.cat-style-pills .cat-group-li > .category-item { border: 1px dashed var(--border-color); padding: 3px 8px; }
+    .category-list.cat-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .category-list.cat-style-grid .cat-group-li > .category-item { border: 1px dashed var(--border-color); padding: 4px 6px; }
+
+    .sidebar-custom-area { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cccccc; display: flex; flex-direction: column; gap: 8px; order: 5; }
+    .sidebar-custom-area:empty { display: none; }
+
+    .custom-btn-el { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); text-decoration: none; font-family: inherit; font-size: 12px; cursor: pointer; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease; max-width: 100%; }
+    .custom-btn-el.is-photo-btn { padding: 2px; background: transparent; }
+    .custom-btn-el img { display: block; max-width: 100%; height: auto; object-fit: contain; }
+    .hover-fx-invert:hover { background: var(--text-color) !important; color: var(--bg-color) !important; border-color: var(--accent-color) !important; }
+    .hover-fx-accent:hover { background: var(--accent-color) !important; color: var(--bg-color) !important; }
+    .hover-fx-rainbow:hover { color: var(--rainbow-text) !important; background: var(--rainbow-grad) !important; background-size: 400% 100% !important; animation: flujoArcoiris 6s linear infinite !important; }
+    .hover-fx-celeste:hover { background: #00f0ff !important; color: #111111 !important; border-color: #111111 !important; }
+    .hover-fx-lift:hover { transform: translate(-3px, -3px); }
+    .hover-fx-tilt:hover { transform: rotate(-2.5deg) scale(1.03); }
+    .hover-fx-zoom:hover { transform: scale(1.06); }
+
+    .btn-list-wrapper { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+    .btn-list-wrapper.list-dir-horizontal { flex-direction: row; flex-wrap: wrap; gap: 8px; }
+    .btn-list-wrapper.list-dir-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+    .btn-list-item-row { display: flex; align-items: stretch; width: 100%; }
+    .btn-list-wrapper.list-dir-horizontal .btn-list-item-row { width: auto; }
+    .btn-list-item-el { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); text-decoration: none; font-family: inherit; font-size: 12px; cursor: pointer; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease, box-shadow 0.14s ease; width: 100%; text-align: left; word-break: break-word; }
+    .btn-list-item-el.align-btn-center { align-items: center; text-align: center; }
+    .btn-list-item-el.align-btn-right { align-items: flex-end; text-align: right; }
+    .btn-list-item-main { display: flex; align-items: baseline; gap: 6px; font-weight: bold; width: 100%; }
+    .btn-list-item-el.align-btn-center .btn-list-item-main { justify-content: center; }
+    .btn-list-item-el.align-btn-right .btn-list-item-main { justify-content: flex-end; }
+    .btn-list-bullet-span { flex-shrink: 0; }
+    .btn-list-label-rich { flex: 1; }
+    .btn-list-item-sub { font-size: 11px; opacity: 0.88; font-weight: normal; margin-top: 2px; line-height: 1.35; width: 100%; }
+
+    .columns-block-wrapper { display: grid; gap: 14px; width: 100%; align-items: start; }
+    .column-slot { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .dropdown-widget { position: relative; display: inline-block; max-width: 100%; }
+    .dropdown-trigger { display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; background: var(--bg-color); color: var(--text-color); border: 1px dashed var(--border-color); font-family: inherit; font-size: 12px; cursor: pointer; width: 100%; transition: transform 0.14s ease, background 0.14s ease, color 0.14s ease; }
+    .dropdown-trigger.is-photo-btn { padding: 2px; background: transparent; }
+    .dropdown-trigger img { display: block; max-width: 100%; height: auto; }
+    .dropdown-menu-panel { display: none; position: absolute; top: 100%; left: 0; min-width: 170px; background: var(--bg-color); border: 1px dashed var(--border-color); z-index: 60; flex-direction: column; margin-top: 2px; }
+    .dropdown-widget.open .dropdown-menu-panel, .dropdown-widget.trigger-hover:hover .dropdown-menu-panel { display: flex; }
+    .sidebar .dropdown-menu-panel { position: static; width: 100%; margin-top: 4px; }
+    .dropdown-sub-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; text-decoration: none; color: var(--text-color); font-size: 12px; border-bottom: 1px dashed #cccccc; cursor: pointer; background: var(--bg-color); border-left: none; border-right: none; border-top: none; font-family: inherit; text-align: left; }
+    .dropdown-sub-item:last-child { border-bottom: none; }
+    .dropdown-sub-item img { width: 22px; height: 22px; object-fit: cover; border: 1px dashed var(--border-color); }
+
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed var(--border-color); }
+    .blocks-container { display: flex; flex-wrap: wrap; gap: var(--block-gap); align-items: flex-start; position: relative; min-height: 75vh; }
+    .block-item { position: relative; max-width: 100%; }
+    .align-left { flex-basis: 100%; display: flex; justify-content: flex-start; }
+    .align-center { flex-basis: 100%; display: flex; justify-content: center; }
+    .align-right { flex-basis: 100%; display: flex; justify-content: flex-end; }
+    .block-inner { width: 100%; position: relative; }
+    .block-item.align-sticker { position: absolute; z-index: 10; margin: 0; }
+    .text-block-content { padding: 12px; line-height: 1.55; word-break: break-word; }
+    .text-block-content h1 { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+    .text-block-content h2 { font-size: 15px; font-weight: bold; margin-bottom: 6px; }
+    .text-block-content h3 { font-size: 12px; font-weight: normal; margin-bottom: 6px; }
+    .text-block-content p { margin-bottom: 8px; }
+    .text-block-content ul, .text-block-content ol { padding-left: 20px; margin-bottom: 8px; }
+    .text-block-content blockquote { border-left: 1px dashed var(--border-color); padding-left: 10px; margin: 8px 0; font-style: italic; }
+    .text-block-content a { color: var(--accent-color); text-decoration: underline; }
+    .spacer-block-inner { width: 100%; display: flex; align-items: center; justify-content: center; }
+    .spacer-line { width: 100%; height: 0; }
+    .image-block-figure img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    .video-block-wrapper { width: 100%; position: relative; background: #000000; overflow: hidden; }
+    .video-block-wrapper iframe { width: 100%; height: 100%; display: block; border: 0; }
+    .image-caption { font-size: 11px; margin-top: 5px; opacity: 0.85; }
+    .grid-block-masonry { column-gap: 12px; width: 100%; }
+    .grid-sub-item { break-inside: avoid; margin-bottom: 12px; }
+    .grid-sub-item img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.96); z-index: 100; align-items: center; justify-content: center; flex-direction: column; padding: 24px; user-select: none; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 82vw; max-height: 82vh; width: auto; height: auto; border: 1px dashed var(--border-color); }
+    .lightbox-caption { margin-top: 10px; font-size: 12px; max-width: 80vw; text-align: center; color: #111111; }
+    .lightbox-counter { position: fixed; top: 16px; left: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; font-size: 12px; display: none; }
+    .lightbox-close { position: fixed; top: 16px; right: 20px; background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .lightbox-nav { position: fixed; top: 50%; transform: translateY(-50%); background: #ffffff; color: #111111; border: 1px dashed #111111; padding: 8px 12px; cursor: pointer; font-size: 14px; z-index: 102; display: none; }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column !important;
+        padding-bottom: 90px !important;
+      }
+      .sidebar {
+        width: 100% !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: auto !important;
+        max-height: 35vh !important;
+        border-right: none !important;
+        border-left: none !important;
+        border-bottom: none !important;
+        border-top: 1px dashed var(--border-color) !important;
+        display: flex !important;
+        padding: 12px !important;
+      }
+      .layout.nav-hidden .sidebar { display: none !important; }
+      .featured-area { display: none !important; }
+      .category-list {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        overflow-x: visible !important;
+        gap: 6px !important;
+      }
+      .category-item { font-size: 9px !important; white-space: normal; }
+      .layout.nav-top .subcategory-list, .layout.nav-bottom .subcategory-list { position: static; box-shadow: none; }
+      .main { width: 100% !important; padding: 12px !important; }
+      .blocks-container { gap: var(--mob-block-gap) !important; }
+      .columns-block-wrapper { grid-template-columns: 1fr !important; }
+      .btn-list-wrapper.list-dir-grid2 { grid-template-columns: 1fr !important; }
+      .block-item.mobile-hidden { display: none !important; }
+      
+        .block-item.align-sticker { position: relative !important; left: auto !important; top: auto !important; flex-basis: 100%; display: flex; justify-content: center; width: 100% !important; }
+        .block-item.align-sticker .block-inner { width: var(--mob-w, 100%) !important; }
+      
+      .block-item.align-flow { width: var(--mob-flow-w, 100%) !important; }
+      .block-item:not(.align-flow):not(.align-sticker) .block-inner { width: var(--mob-w, 100%) !important; }
+      .grid-block-masonry { column-count: var(--mob-cols, 2) !important; }
+      .lightbox img { max-width: 92vw; max-height: 75vh; }
+      .lightbox-nav { top: auto; bottom: 20px; transform: none; padding: 6px 14px; }
+      .lightbox-prev { left: 25%; }
+      .lightbox-next { right: 25%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout nav-top active-style-accent ">
+    <aside class="sidebar">
+      <div class="site-title active" id="homeBtn">AGENERADAS</div>
+      <div class="featured-area place-below-title align-img-left hidden-box" id="featuredArea"></div>
+      <ul class="category-list cat-style-pills" id="categoryList"></ul>
+      <div class="sidebar-custom-area" id="sidebarCustomArea"></div>
+    </aside>
+    <main class="main">
+      <div class="toolbar"><span id="currentViewLabel">inicio</span></div>
+      <div class="blocks-container" id="blocksContainer"></div>
+    </main>
+  </div>
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-counter" id="lightboxCounter"></span>
+    <button class="lightbox-close" id="lightboxClose">cerrar [esc]</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev">â†</button>
+    <img id="lightboxImg" src="" alt="">
+    <button class="lightbox-nav lightbox-next" id="lightboxNext">â†’</button>
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+  <script>
+    const DATA = {"siteTitle":"AGENERADAS","theme":{"bg":"#c2c2c2","text":"#111111","accent":"#0400ff","border":"#ffffff","bgMode":"color","bgImageUrl":"","bgTileSize":0,"sidebarTransparent":false,"font":"'Times New Roman', Times, serif","blockGap":0,"hideSidebar":false,"navPosition":"top","navSize":28,"catFontSize":13,"catListStyle":"pills","catActiveStyle":"accent","showFeatured":false,"featuredPlace":"below-title","featuredAlign":"left","featuredSize":100,"featuredRatio":"auto","featuredBorder":"none","rainbowColors":["#ff0000","#ff7f00","#ffff00","#00ff00","#00ffff","#0000ff","#ff00ff"],"rainbowText":"#111111","cursorMode":"default","cursorUrl":"","faviconMode":"custom","faviconUrl":"https://lh3.googleusercontent.com/d/12Qe-3T2dSIlEfHcnkj0Kp79W7yHX8Qqx","mobNavPos":"fixed-bottom","mobCatLayout":"wrap","mobCatSize":9,"mobShowFeatured":false,"mobStickersFree":false,"mobBlockGap":0,"mobPadding":12},"globalFeaturedImages":[],"sidebarWidgets":[],"home":{"name":"inicio","featuredImg":"","featuredImages":["https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY"],"blocks":[{"id":"b-wuzkw6i","type":"columns","width":100,"mobileWidth":100,"align":"flow","template":"1fr 1fr 1fr","gap":0,"columns":[{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[{"id":"b-mk9250z","type":"image","src":"https://lh3.googleusercontent.com/d/163POpGJAPbVi_wSj73_9qxyAbaBUWHkY","caption":"","borderStyle":"dashed","borderWidth":1,"borderColor":"#ffffff"},{"id":"b-i0tqo85","type":"button","btnKind":"text","label":"ver mÃ¡s","actionType":"url","target":"https://","hoverEffect":"invert","useCustomBg":true,"bgColor":"#d9d9d9","textColor":"#111111","shadowStyle":"bevel","shadowColor":"#363030","borderStyle":"dashed","borderWidth":1,"borderColor":"#111111"}]},{"bgColor":"#b0b0b0","useBg":true,"borderStyle":"dashed","borderColor":"#111111","blocks":[{"id":"b-zn3cpfm","type":"text","borderStyle":"none","borderWidth":1,"borderColor":"#111111","html":"<h2 style=\"text-align: center;\"><i><u><br></u></i></h2><h2 style=\"text-align: center;\"><i><u>a.g.e.n.e.r.a.d.a.s.</u> </i><span style=\"font-weight: normal;\">es un colectivo de arte cross con una preocupaciÃ³n particular por el lÃ­mite entre el arte y la moda. La pieza de indumentaria como objeto trifÃ¡sico, de exposiciÃ³n, de uso, y de performance, rompe los esquemas de la definiciÃ³n que operan sobre las tecnologÃ­as de gÃ©nero. De modo que permiten el trÃ¡nsito hacia expresiones y experiencias diversas y dispares, confirmando asÃ­ la posibilidad de un arte vivo, fluido y mutable.&nbsp;</span></h2><div><span style=\"font-weight: normal;\"><br></span></div>"},{"id":"b-stzwjlc","type":"buttonList","listDir":"vertical","bullet":"â€¢ ","hoverEffect":"invert","useCustomBg":false,"bgColor":"#c7c7c7","textColor":"#0d0d0d","shadowStyle":"bevel","shadowColor":"#111111","borderStyle":"solid","borderWidth":1,"borderColor":"#111111","items":[{"label":"2026 -  â€œMotivos?â€ Stand en Plateada Feria.","subtext":"","target":"cat-1795703514297","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 -  â€œMotivos?â€ Stand en Plateada Feria.</span>"},{"label":"2026 - â€œ El lÃ­mite entre el Arte y la Moda, show de Talentosâ€","subtext":"el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el lÃ­mite entre el arte y la modaâ€ un fuego todo el show ðŸ”¥ se reinventaron las reglas del juego ..","target":"cat-1795703561639","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2026 - â€œ El lÃ­mite entre el Arte y la Moda, show de Talentosâ€</span>","subHtml":"<font color=\"#464649\">el escandalo se presenta en un nuevo concepto by ageneradas.coop: la primer feria y fashion film trans en villa ortuzar que cuestiona el lÃ­mite entre el arte y la modaâ€ un fuego todo el show ðŸ”¥ se reinventaron las reglas del juego .</font><font color=\"#ababb0\">.</font>"},{"label":"2025 - â€œ Asado de Fashion - Feria 420 todo el Showâ€ Las Deudas.","subtext":"a mÃ¡s de una se le va a salir el culo a fuera como la gallina","target":"cat-1795703573596","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - â€œ Asado de Fashion - Feria 420 todo el Showâ€ Las Deudas.</span>"},{"label":"2025 - â€œ Perfectos Dragones - Desfile Agenero â€ La Lengua.","subtext":"","target":"cat-1795703585495","actionType":"section","bullet":"","html":"<span style=\"font-weight: normal;\">2025 - â€œ Perfectos Dragones - Desfile Agenero â€ La Lengua.</span>"}]}]},{"bgColor":"","useBg":false,"borderStyle":"none","borderColor":"#111111","blocks":[]}],"borderStyle":"dashed","borderWidth":1,"borderColor":"#111111","hideMobile":false},{"id":"b-ecqrw8m","type":"dropdown","btnKind":"photo","label":"hkhkhmkhmhkljln","imgSrc":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","triggerMode":"click","hoverEffect":"invert","items":[{"label":"OpciÃ³n 1","target":"#","actionType":"url"}],"width":25,"mobileWidth":100,"align":"flow","borderStyle":"none","borderWidth":1,"borderColor":"#ffffff"},{"id":"b-m4l4vjc","type":"dropdown","btnKind":"photo","label":"menÃº","imgSrc":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","triggerMode":"click","hoverEffect":"invert","items":[{"label":"https://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpghttps://i.pinimg.com/736x/de/64/e9/de64e9e55c7b65013ec0b511da4d0441.jpg","target":"#","actionType":"url","imgSrc":""}],"width":25,"mobileWidth":100,"align":"flow","borderStyle":"none","borderWidth":1,"borderColor":"#ffffff"}]},"categories":[{"id":"cat-1795701242518","name":"eventos","featuredImg":"","featuredImages":[],"blocks":[],"parentId":null,"hiddenInNav":false},{"id":"cat-1795703514297","parentId":"cat-1795701242518","hiddenInNav":false,"name":"motivos?","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703561639","parentId":"cat-1795701242518","hiddenInNav":false,"name":"El lÃ­mite entre el Arte y la Moda","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703573596","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Asado de Fashion","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795703585495","parentId":"cat-1795701242518","hiddenInNav":false,"name":"Perfectos Dragones","featuredImg":"","featuredImages":[],"blocks":[]},{"id":"cat-1795704033320","parentId":null,"hiddenInNav":false,"name":"campaÃ±as de moda","featuredImg":"","featuredImages":[],"blocks":[]}]};
+    let activeSectionId = "home";
+    let expandedCatIds = {};
+    let lbGallery = [], lbIndex = 0, touchStartX = 0;
+    const categoryListEl = document.getElementById("categoryList");
+    const sidebarCustomAreaEl = document.getElementById("sidebarCustomArea");
+    const blocksContainerEl = document.getElementById("blocksContainer");
+    const featuredAreaEl = document.getElementById("featuredArea");
+    const currentViewLabelEl = document.getElementById("currentViewLabel");
+    const homeBtn = document.getElementById("homeBtn");
+    const lightboxEl = document.getElementById("lightbox");
+    const lightboxImgEl = document.getElementById("lightboxImg");
+    const lightboxCaptionEl = document.getElementById("lightboxCaption");
+    const lightboxCounterEl = document.getElementById("lightboxCounter");
+    const lightboxPrevEl = document.getElementById("lightboxPrev");
+    const lightboxNextEl = document.getElementById("lightboxNext");
+
+    function getFallbackDriveUrl(url) {
+      const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w1600" : url;
+    }
+    function openLb(imgs, idx, cap) {
+      lbGallery = imgs; lbIndex = idx; updateLb(cap); lightboxEl.classList.add("open");
+    }
+    function updateLb(cap) {
+      const src = lbGallery[lbIndex];
+      lightboxImgEl.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+      lightboxImgEl.src = src;
+      lightboxCaptionEl.textContent = cap || "";
+      if (lbGallery.length > 1) {
+        lightboxPrevEl.style.display = "block"; lightboxNextEl.style.display = "block";
+        lightboxCounterEl.style.display = "block"; lightboxCounterEl.textContent = (lbIndex + 1) + " / " + lbGallery.length;
+      } else {
+        lightboxPrevEl.style.display = "none"; lightboxNextEl.style.display = "none"; lightboxCounterEl.style.display = "none";
+      }
+    }
+    function stepLb(d) {
+      if (lbGallery.length <= 1) return;
+      lbIndex = (lbIndex + d + lbGallery.length) % lbGallery.length; updateLb("");
+    }
+    lightboxPrevEl.addEventListener("click", e => { e.stopPropagation(); stepLb(-1); });
+    lightboxNextEl.addEventListener("click", e => { e.stopPropagation(); stepLb(1); });
+    lightboxEl.addEventListener("touchstart", e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    lightboxEl.addEventListener("touchend", e => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 40) stepLb(diff > 0 ? 1 : -1);
+    }, { passive: true });
+
+    function getSectionPreviewImages(sec) {
+      const globals = (DATA.globalFeaturedImages || []).slice();
+      if (!sec) return globals;
+      let list = [];
+      if (Array.isArray(sec.featuredImages) && sec.featuredImages.length) list = sec.featuredImages.slice();
+      else {
+        const imgB = sec.blocks.find(b => b.type === "image" && b.src);
+        if (imgB) list = [imgB.src];
+        else {
+          const gridB = sec.blocks.find(b => b.type === "grid" && b.images && b.images.length);
+          if (gridB) list = [gridB.images[0]];
+          else {
+            const vidB = sec.blocks.find(b => b.type === "youtube" && b.videoId);
+            if (vidB) list = ["https://img.youtube.com/vi/" + vidB.videoId + "/hqdefault.jpg"];
+          }
+        }
+      }
+      return globals.concat(list);
+    }
+
+    function renderFeatured(sec) {
+      const t = DATA.theme;
+      featuredAreaEl.innerHTML = "";
+      if (!t.showFeatured) return;
+      const imgs = getSectionPreviewImages(sec);
+      if (!imgs.length) return;
+      const sizePct = t.featuredSize || 100;
+      const ratio = t.featuredRatio || "auto";
+      const borderSt = t.featuredBorder || "dashed";
+
+      imgs.forEach((src, i) => {
+        const card = document.createElement("div");
+        card.style.width = sizePct >= 98 ? "100%" : "calc(" + sizePct + "% - 4px)";
+        const img = document.createElement("img");
+        img.src = src;
+        if (ratio === "circle") { img.style.aspectRatio = "1 / 1"; img.style.borderRadius = "50%"; img.style.objectFit = "cover"; }
+        else if (ratio !== "auto") { img.style.aspectRatio = ratio; img.style.objectFit = "cover"; }
+        else { img.style.height = "auto"; }
+        img.style.border = borderSt === "none" ? "none" : "1px " + borderSt + " var(--border-color)";
+        img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(src); };
+        img.addEventListener("click", () => openLb(imgs, i, ""));
+        card.appendChild(img);
+        featuredAreaEl.appendChild(card);
+      });
+    }
+
+    function applyBorder(el, b) {
+      const st = b.borderStyle !== undefined ? b.borderStyle : "dashed";
+      el.style.border = st === "none" ? "none" : (b.borderWidth || 1) + "px " + st + " " + (b.borderColor || "#111111");
+      el.style.borderRadius = b.borderRadius || "0px";
+    }
+    function getShadowCSS(sh, sc) {
+      const c = sc || "#111111";
+      if (!sh || sh === "none") return "none";
+      if (sh === "hard") return "3px 3px 0px " + c;
+      if (sh === "hard-lg") return "6px 6px 0px " + c;
+      if (sh === "soft") return "0px 4px 12px rgba(0,0,0,0.28)";
+      if (sh === "bevel") return "inset 2px 2px 0px #ffffff, inset -2px -2px 0px #666666, 2px 2px 0px " + c;
+      if (sh === "glow") return "0px 0px 10px " + c + ", 0px 0px 4px " + c;
+      return "none";
+    }
+    function applyBtnVisuals(el, item) {
+      if (item.useCustomBg && item.bgColor) el.style.background = item.bgColor;
+      else if (item.btnKind === "photo") el.style.background = "transparent";
+      if (item.textColor) el.style.color = item.textColor;
+      el.style.boxShadow = getShadowCSS(item.shadowStyle, item.shadowColor);
+    }
+    function buildWidget(item) {
+      const hCls = item.hoverEffect && item.hoverEffect !== "none" ? " hover-fx-" + item.hoverEffect : "";
+      if (item.type === "button") {
+        const el = document.createElement(item.actionType === "url" ? "a" : "button");
+        el.className = "custom-btn-el" + (item.btnKind === "photo" ? " is-photo-btn" : "") + hCls;
+        if (item.actionType === "url") { el.href = item.target || "#"; el.target = "_blank"; el.rel = "noopener"; }
+        else { el.type = "button"; el.addEventListener("click", () => { if (item.target) { activeSectionId = item.target; render(); } }); }
+        applyBorder(el, item);
+        applyBtnVisuals(el, item);
+        if (item.btnKind === "photo" && item.imgSrc) {
+          const img = document.createElement("img"); img.src = item.imgSrc;
+          img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(item.imgSrc); };
+          el.appendChild(img);
+        } else { el.textContent = item.label || "botÃ³n"; }
+        return el;
+      }
+      if (item.type === "buttonList") {
+        const wrap = document.createElement("div");
+        const dir = item.listDir || "vertical";
+        wrap.className = "btn-list-wrapper" + (dir === "horizontal" ? " list-dir-horizontal" : (dir === "grid2" ? " list-dir-grid2" : ""));
+        const globalBul = item.bullet || "";
+        (item.items || []).forEach(sub => {
+          const row = document.createElement("div"); row.className = "btn-list-item-row";
+          const isSec = sub.actionType === "section";
+          const el = document.createElement(isSec ? "button" : "a");
+          const alignCls = item.itemAlign === "center" ? " align-btn-center" : (item.itemAlign === "right" ? " align-btn-right" : "");
+          el.className = "btn-list-item-el" + alignCls + hCls;
+          if (item.fontSize) el.style.fontSize = item.fontSize + "px";
+          if (isSec) {
+            el.type = "button";
+            el.addEventListener("click", () => { if (sub.target) { activeSectionId = sub.target; render(); } });
+          } else {
+            el.href = sub.target || "#"; el.target = "_blank"; el.rel = "noopener";
+          }
+          applyBorder(el, item);
+          applyBtnVisuals(el, item);
+          const itemBul = sub.bullet !== undefined ? sub.bullet : globalBul;
+          const m = document.createElement("span"); m.className = "btn-list-item-main";
+          if (itemBul) {
+            const bs = document.createElement("span"); bs.className = "btn-list-bullet-span"; bs.textContent = itemBul; m.appendChild(bs);
+          }
+          const lr = document.createElement("span"); lr.className = "btn-list-label-rich";
+          if (sub.html) lr.innerHTML = sub.html; else lr.textContent = sub.label || "Ã­tem";
+          m.appendChild(lr);
+          el.appendChild(m);
+          if ((sub.subtext && sub.subtext.trim() !== "") || (sub.subHtml && sub.subHtml.trim() !== "")) {
+            const s = document.createElement("span"); s.className = "btn-list-item-sub";
+            if (item.fontSize) s.style.fontSize = Math.max(9, item.fontSize - 1) + "px";
+            if (sub.subHtml) s.innerHTML = sub.subHtml; else s.textContent = sub.subtext;
+            el.appendChild(s);
+          }
+          row.appendChild(el);
+          wrap.appendChild(row);
+        });
+        return wrap;
+      }
+      if (item.type === "dropdown") {
+        const wrap = document.createElement("div");
+        wrap.className = "dropdown-widget" + (item.triggerMode === "hover" ? " trigger-hover" : "");
+        const trig = document.createElement("button");
+        trig.type = "button";
+        trig.className = "dropdown-trigger" + (item.btnKind === "photo" ? " is-photo-btn" : "") + hCls;
+        applyBorder(trig, item);
+        applyBtnVisuals(trig, item);
+        if (item.btnKind === "photo" && item.imgSrc) {
+          const img = document.createElement("img"); img.src = item.imgSrc;
+          img.onerror = function() { this.onerror = null; this.src = getFallbackDriveUrl(item.imgSrc); };
+          trig.appendChild(img);
+        } else {
+          const s1 = document.createElement("span"); s1.textContent = item.label || "menÃº";
+          const s2 = document.createElement("span"); s2.textContent = "â–¾";
+          trig.appendChild(s1); trig.appendChild(s2);
+        }
+        trig.addEventListener("click", e => {
+          e.stopPropagation();
+          const was = wrap.classList.contains("open");
+          document.querySelectorAll(".dropdown-widget.open").forEach(d => d.classList.remove("open"));
+          if (!was) wrap.classList.add("open");
+        });
+        const panel = document.createElement("div"); panel.className = "dropdown-menu-panel";
+        (item.items || []).forEach(sub => {
+          const isSec = sub.actionType === "section";
+          const a = document.createElement(isSec ? "button" : "a");
+          a.className = "dropdown-sub-item" + hCls;
+          if (isSec) {
+            a.type = "button";
+            a.addEventListener("click", () => {
+              wrap.classList.remove("open");
+              if (sub.target) { activeSectionId = sub.target; render(); }
+            });
+          } else {
+            a.href = sub.target || "#"; a.target = "_blank"; a.rel = "noopener";
+          }
+          if (sub.imgSrc) { const im = document.createElement("img"); im.src = sub.imgSrc; a.appendChild(im); }
+          const tx = document.createElement("span"); tx.textContent = sub.label || "opciÃ³n"; a.appendChild(tx);
+          panel.appendChild(a);
+        });
+        wrap.appendChild(trig); wrap.appendChild(panel);
+        return wrap;
+      }
+      return document.createElement("div");
+    }
+    document.addEventListener("click", () => document.querySelectorAll(".dropdown-widget.open").forEach(d => d.classList.remove("open")));
+
+    function render() {
+      const sec = activeSectionId === "home" ? DATA.home : DATA.categories.find(c => c.id === activeSectionId);
+      categoryListEl.innerHTML = "";
+      const topCats = DATA.categories.filter(c => !c.parentId && !c.hiddenInNav);
+      topCats.forEach(cat => {
+        const subs = DATA.categories.filter(s => s.parentId === cat.id && !s.hiddenInNav);
+        const isChildAct = subs.some(s => s.id === activeSectionId);
+        const isOpen = !!expandedCatIds[cat.id] || activeSectionId === cat.id || isChildAct;
+        const li = document.createElement("li");
+        li.className = "cat-group-li" + (subs.length ? " has-subs" : "") + (isOpen ? " sub-open" : "");
+
+        const row = document.createElement("div");
+        row.className = "category-item" + (activeSectionId === cat.id ? " active" : "");
+        const mainWrap = document.createElement("span");
+        mainWrap.className = "cat-main-label";
+        const nameSp = document.createElement("span");
+        nameSp.textContent = cat.name;
+        mainWrap.appendChild(nameSp);
+
+        if (subs.length) {
+          const caret = document.createElement("span");
+          caret.className = "cat-sub-caret";
+          caret.textContent = "â–¾";
+          caret.addEventListener("click", e => {
+            e.stopPropagation();
+            expandedCatIds[cat.id] = !expandedCatIds[cat.id];
+            render();
+          });
+          mainWrap.appendChild(caret);
+        }
+        row.appendChild(mainWrap);
+        row.addEventListener("mouseenter", () => renderFeatured(cat));
+        row.addEventListener("mouseleave", () => renderFeatured(sec));
+        row.addEventListener("click", () => {
+          if (subs.length) expandedCatIds[cat.id] = !expandedCatIds[cat.id];
+          activeSectionId = cat.id;
+          render();
+        });
+        li.appendChild(row);
+
+        if (subs.length) {
+          const subUl = document.createElement("ul");
+          subUl.className = "subcategory-list";
+          subs.forEach(sub => {
+            const subLi = document.createElement("li");
+            const subRow = document.createElement("div");
+            subRow.className = "category-item subcategory-item" + (activeSectionId === sub.id ? " active" : "");
+            subRow.textContent = "â†³ " + sub.name;
             subRow.addEventListener("mouseenter", () => renderFeatured(sub));
             subRow.addEventListener("mouseleave", () => renderFeatured(sec));
             subRow.addEventListener("click", e => {
